@@ -24,7 +24,10 @@ connectDB();
 
 import ProductRouter from "./routes/products";
 
+import CategoryRouter from "./routes/categories";
+
 app.use("/api/product", ProductRouter);
+app.use("/api/category", CategoryRouter);
 
 app.get("/", (_req, res) => {
   console.log("someone pinged here");

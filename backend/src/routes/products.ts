@@ -9,10 +9,36 @@ import {
 import {
   newProductParser,
   productIdParser,
-  errorMiddleware,
+  categoryIdParser,
 } from "../middleware/productMiddleware";
+import { getCategoryById } from "../services/categoryService";
+
+import { errorMiddleware } from "../middleware/errorMiddleware";
 
 const router = express.Router();
+
+router.post(
+  "/:id/:category",
+  productIdParser,
+  categoryIdParser,
+  async (req, res) => {
+    const gottenProduct = await getProductById(req.params.id);
+    if (!gottenProduct) {
+      res.status(400).json({ error: "product with provided id was not found" });
+    } else {
+      const gottenCategory = await getCategoryById(req.params.category);
+      if (gottenCategory) {
+        gottenProduct.category = gottenCategory.id;
+        await gottenProduct.save();
+        res.json(gottenProduct);
+      } else {
+        res
+          .status(400)
+          .json({ error: "category with the provided id was not found" });
+      }
+    }
+  }
+);
 
 router.get("/:id", productIdParser, async (req, res) => {
   const gottenProduct = await getProductById(req.params.id);

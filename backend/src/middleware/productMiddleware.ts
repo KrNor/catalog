@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { zodProduct } from "../types";
 import mongoose from "mongoose";
-import z from "zod";
 
 export const newProductParser = (
   req: Request,
@@ -37,17 +36,22 @@ export const productIdParser = (
   }
 };
 
-export const errorMiddleware = (
-  error: unknown,
-  _req: Request,
-  res: Response,
+export const categoryIdParser = (
+  req: Request,
+  _res: Response,
   next: NextFunction
 ) => {
-  if (error instanceof z.ZodError) {
-    res.status(400).send({ error: error.issues });
-  } else if (error instanceof Error) {
-    res.status(400).send({ error: error.message });
-  } else {
+  try {
+    if (
+      req.params.category &&
+      typeof req.params.category === "string" &&
+      mongoose.isValidObjectId(req.params.category)
+    ) {
+      next();
+    } else {
+      throw new Error("bad category id");
+    }
+  } catch (error: unknown) {
     next(error);
   }
 };

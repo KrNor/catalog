@@ -1,4 +1,5 @@
 import z from "zod";
+import mongoose from "mongoose";
 export interface Product {
   name: String;
   price: Number; // saved in cents
@@ -6,8 +7,22 @@ export interface Product {
   Identifier: String;
   descriptionShort: String;
   descriptionLong: String;
-  categoryArray: [String];
+  category: String;
 }
+
+export interface Category {
+  name: String;
+  description: String;
+  parent: String;
+  lineage: [String];
+}
+
+export const zodCategory = z.object({
+  name: z.string(),
+  description: z.string(),
+  parent: z.string().optional(),
+  lineage: z.array(z.string()).optional(),
+});
 
 export const zodProduct = z.object({
   name: z.string().min(3),
@@ -16,7 +31,13 @@ export const zodProduct = z.object({
   Identifier: z.string(),
   descriptionShort: z.string().min(3),
   descriptionLong: z.string().min(3),
-  categoryArray: z.array(z.string()),
+  category: z
+    .string()
+    .refine((val) => {
+      return mongoose.Types.ObjectId.isValid(val);
+    })
+    .optional(),
 });
 
 export type zodProductType = z.infer<typeof zodProduct>;
+export type zodCategoryType = z.infer<typeof zodCategory>;

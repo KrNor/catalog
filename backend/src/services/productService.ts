@@ -1,13 +1,19 @@
 import Product from "../models/product";
-import { zodProductType, zodProduct } from "../types";
+import { getCategoryById } from "./categoryService";
+// import Category from "../models/category";
+import { zodProductType } from "../types";
 export const createProduct = async (object: zodProductType) => {
   const productToSave = {
     ...object,
   };
-  // console.log(productToSave);
+  if (productToSave.category) {
+    const wantedCategory = await getCategoryById(productToSave.category);
+    if (!wantedCategory) {
+      throw new Error("specified category doesn't exist");
+    }
+  }
   const new_product = new Product(productToSave);
   await new_product.save();
-  // console.log(new_product);
   return new_product;
 };
 
@@ -17,26 +23,12 @@ export const getAllProducts = async () => {
 };
 
 export const getProductById = async (idOfProduct: string) => {
-  // saving just in case
-  //("name price avaliability Identifier descriptionShort descriptionLong categoryArray");
-  const wantedProduct = await Product.findById(
-    idOfProduct,
-    "name price avaliability Identifier descriptionShort descriptionLong categoryArray"
-  ).exec();
-  if (!wantedProduct) {
-    return wantedProduct;
-  } else {
-    const parsedProduct = zodProduct.parse(wantedProduct);
-    return parsedProduct;
-  }
+  const wantedProduct = await Product.findById(idOfProduct).exec();
+  // console.log(wantedProduct);
+  return wantedProduct;
 };
 
 export const deleteProduct = async (idOfProduct: string) => {
   const wantedProduct = await Product.findByIdAndDelete(idOfProduct).exec();
-  if (!wantedProduct) {
-    return wantedProduct;
-  } else {
-    const parsedProduct = zodProduct.parse(wantedProduct);
-    return parsedProduct;
-  }
+  return wantedProduct;
 };

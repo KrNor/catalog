@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { Product } from "../types";
+import { Category } from "../types";
 
-const schema = new mongoose.Schema<Product>(
+const schema = new mongoose.Schema<Category>(
   {
     name: {
       type: String,
@@ -9,15 +9,18 @@ const schema = new mongoose.Schema<Product>(
       trim: true,
       unique: true,
     },
-    price: Number, // saved in cents
-    avaliability: Number,
-    Identifier: String,
-    descriptionShort: String,
-    descriptionLong: String,
-    category: {
+    description: String,
+    parent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
+      default: null,
     },
+    lineage: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -30,4 +33,4 @@ schema.set("toJSON", {
   },
 });
 
-export default mongoose.model<Product>("Product", schema);
+export default mongoose.model<Category>("Category", schema);

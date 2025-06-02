@@ -17,6 +17,21 @@ export interface Category {
   lineage: [String];
 }
 
+export interface Tag {
+  tagName: String;
+  tagAttributes: [String];
+}
+
+export const zodTag = z.object({
+  tagName: z.string(),
+  tagAttributes: z.array(z.string().optional()),
+});
+
+export const zodTagToSave = z.object({
+  tagName: z.string(),
+  tagAttribute: z.string(),
+});
+
 export const zodCategory = z.object({
   name: z.string(),
   description: z.string(),
@@ -39,5 +54,7 @@ export const zodProduct = z.object({
     .optional(),
 });
 
+export type zodTagToSaveType = z.infer<typeof zodTagToSave>;
+export type zodTagType = z.infer<typeof zodTag>;
 export type zodProductType = z.infer<typeof zodProduct>;
 export type zodCategoryType = z.infer<typeof zodCategory>;

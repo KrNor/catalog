@@ -26,8 +26,11 @@ import ProductRouter from "./routes/products";
 
 import CategoryRouter from "./routes/categories";
 
+import TagRouter from "./routes/tags";
+
 app.use("/api/product", ProductRouter);
 app.use("/api/category", CategoryRouter);
+app.use("/api/tag", TagRouter);
 
 app.get("/", (_req, res) => {
   console.log("someone pinged here");

@@ -8,6 +8,7 @@ const schema = new mongoose.Schema<Category>(
       required: true,
       trim: true,
       unique: true,
+      index: true,
     },
     description: String,
     parent: {

@@ -8,12 +8,12 @@ const schema = new mongoose.Schema<Tag>(
       required: true,
       trim: true,
       unique: true,
+      index: true,
     },
     tagAttributes: [
       {
         type: String,
         trim: true,
-        unique: true,
       },
     ],
   },

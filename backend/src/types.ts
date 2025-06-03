@@ -8,6 +8,7 @@ export interface Product {
   descriptionShort: String;
   descriptionLong: String;
   category: String;
+  tags: [TagToSave];
 }
 
 export interface Category {
@@ -20,6 +21,11 @@ export interface Category {
 export interface Tag {
   tagName: String;
   tagAttributes: [String];
+}
+
+export interface TagToSave {
+  tagName: String;
+  tagAttribute: String;
 }
 
 export const zodTag = z.object({
@@ -52,6 +58,7 @@ export const zodProduct = z.object({
       return mongoose.Types.ObjectId.isValid(val);
     })
     .optional(),
+  tags: z.array(zodTagToSave),
 });
 
 export type zodTagToSaveType = z.infer<typeof zodTagToSave>;

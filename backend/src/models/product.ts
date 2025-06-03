@@ -8,6 +8,7 @@ const schema = new mongoose.Schema<Product>(
       required: true,
       trim: true,
       unique: true,
+      index: true,
     },
     price: Number, // saved in cents
     avaliability: Number,
@@ -18,6 +19,12 @@ const schema = new mongoose.Schema<Product>(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
     },
+    tags: [
+      {
+        tagName: String,
+        tagAttribute: String,
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -29,5 +36,4 @@ schema.set("toJSON", {
     delete returnedObject.__v;
   },
 });
-
 export default mongoose.model<Product>("Product", schema);

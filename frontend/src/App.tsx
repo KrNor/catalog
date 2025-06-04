@@ -1,35 +1,66 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// import { useState, useEffect } from "react";
+import { Container } from "react-bootstrap";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
+import SingleProductDetailed from "./components/singleProduct";
+import Products from "./components/products";
+// import type { RootState } from "./store";
+
+// import type { Product } from "./types";
+
+const Home = () => (
+  <div>
+    <h2>this is home page</h2>
+  </div>
+);
+
+const App = () => {
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   dispatch<any>(initializeProducts());
+  // });
+
+  const padding = {
+    padding: 5,
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Container>
+      <Router>
+        <div>
+          <Link style={padding} to="/">
+            home
+          </Link>
+          <Link style={padding} to="/products">
+            products
+          </Link>
+        </div>
+
+        <Routes>
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:id" element={<SingleProductDetailed />} />
+          <Route path="/" element={<Home />} />
+        </Routes>
+
+        <div>
+          <p>this is app</p>
+        </div>
+      </Router>
+    </Container>
+  );
+};
+
+{
+  /* <Switch>
+  <Route path={`${match.path}/:topicId`}>
+    <Topic />
+  </Route>
+  <Route path={match.path}>
+    <h3>Please select a topic.</h3>
+  </Route>
+</Switch>; */
 }
 
-export default App
+export default App;

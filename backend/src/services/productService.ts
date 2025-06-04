@@ -38,7 +38,10 @@ export const createProduct = async (object: zodProductType) => {
 };
 
 export const getAllProducts = async () => {
-  const allProducts = await Product.find({});
+  const allProducts = await Product.find(
+    {},
+    "name price avaliability Identifier descriptionShort descriptionLong category tags id "
+  );
   return allProducts;
 };
 

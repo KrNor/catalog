@@ -1,8 +1,10 @@
 import express from "express";
 
+// getAllProducts,
+
 import {
   createProduct,
-  getAllProducts,
+  getAllSimplifiedProducts,
   getProductById,
   deleteProduct,
   addTagToProduct,
@@ -74,8 +76,14 @@ router.get("/:id", productIdParser, async (req, res) => {
   }
 });
 
+// router.get("/", async (_req, res) => {
+//   const products = await getAllProducts();
+//   // console.log(products);
+//   res.json(products);
+// });
+
 router.get("/", async (_req, res) => {
-  const products = await getAllProducts();
+  const products = await getAllSimplifiedProducts();
   // console.log(products);
   res.json(products);
 });

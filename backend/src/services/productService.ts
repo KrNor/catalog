@@ -45,8 +45,19 @@ export const getAllProducts = async () => {
   return allProducts;
 };
 
+export const getAllSimplifiedProducts = async () => {
+  const allProducts = await Product.find(
+    {},
+    "name price avaliability descriptionShort category id "
+  );
+  return allProducts;
+};
+
 export const getProductById = async (idOfProduct: string) => {
-  const wantedProduct = await Product.findById(idOfProduct).exec();
+  const wantedProduct = await Product.findById(
+    idOfProduct,
+    "name price avaliability Identifier descriptionShort descriptionLong category tags idname price avaliability Identifier descriptionShort descriptionLong category tags id"
+  ).exec();
   // console.log(wantedProduct);
   return wantedProduct;
 };

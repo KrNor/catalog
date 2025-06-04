@@ -4,9 +4,6 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import SingleProductDetailed from "./components/singleProduct";
 import Products from "./components/products";
-// import type { RootState } from "./store";
-
-// import type { Product } from "./types";
 
 const Home = () => (
   <div>
@@ -15,13 +12,6 @@ const Home = () => (
 );
 
 const App = () => {
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   dispatch<any>(initializeProducts());
-  // });
-
   const padding = {
     padding: 5,
   };
@@ -51,16 +41,5 @@ const App = () => {
     </Container>
   );
 };
-
-{
-  /* <Switch>
-  <Route path={`${match.path}/:topicId`}>
-    <Topic />
-  </Route>
-  <Route path={match.path}>
-    <h3>Please select a topic.</h3>
-  </Route>
-</Switch>; */
-}
 
 export default App;

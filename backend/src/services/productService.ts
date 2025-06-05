@@ -53,6 +53,14 @@ export const getAllSimplifiedProducts = async () => {
   return allProducts;
 };
 
+export const getFilteredSimplifiedProducts = async (searchTerm: string) => {
+  const filteredProducts = await Product.find(
+    { name: new RegExp(searchTerm, "i") },
+    "name price avaliability descriptionShort category id "
+  );
+  return filteredProducts;
+};
+
 export const getProductById = async (idOfProduct: string) => {
   const wantedProduct = await Product.findById(
     idOfProduct,

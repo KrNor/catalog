@@ -13,7 +13,6 @@ import {
 } from "react-bootstrap";
 
 import { getProduct } from "../reducers/currentProductReducer";
-
 import type { RootState } from "../types";
 
 const SingleProductDetailed = () => {
@@ -21,8 +20,6 @@ const SingleProductDetailed = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   console.log(id);
-
-  //used before
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

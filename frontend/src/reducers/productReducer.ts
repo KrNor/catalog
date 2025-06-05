@@ -17,7 +17,15 @@ export const { setProducts } = productsSlice.actions;
 export const initializeProducts = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (dispatch: any) => {
-    const products = await productService.getAll();
+    const products = await productService.getAll(); //temporary change change back to getAll later
+    dispatch(setProducts(products));
+  };
+};
+
+export const setFilteredProducts = (queryToUse: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return async (dispatch: any) => {
+    const products = await productService.getFiltered(queryToUse); //temporary change change back to getAll later
     dispatch(setProducts(products));
   };
 };

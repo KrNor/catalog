@@ -1,9 +1,6 @@
-import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { getProduct } from "../reducers/currentProductReducer";
-
+import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import {
   Container,
   Row,
@@ -14,6 +11,8 @@ import {
   Tab,
   Nav,
 } from "react-bootstrap";
+
+import { getProduct } from "../reducers/currentProductReducer";
 
 import type { RootState } from "../types";
 

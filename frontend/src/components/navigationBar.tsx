@@ -12,13 +12,15 @@ const SearchBurron = () => {
   const navBarSearch = (formData: any) => {
     const query = formData.get("searchThing");
 
-    console.log(query);
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dispatch<any>(setFilteredProducts(query));
+    // console.log("query inside search button: " + query);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dispatch<any>(setQuery(query));
+
+    const searchQuer = { search: query };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    dispatch<any>(setFilteredProducts(searchQuer));
 
     navigate(`/products?search=${query}`);
   };

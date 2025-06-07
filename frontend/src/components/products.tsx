@@ -7,7 +7,11 @@ import {
   setFilteredProducts,
 } from "../reducers/productReducer";
 
-import type { RootState } from "../types";
+import _ from "lodash";
+
+import type { RootState, QueryObject } from "../types";
+
+import SearchFilters from "./searchFilters";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SingleProduct = (props: any) => {
@@ -27,13 +31,14 @@ const SingleProduct = (props: any) => {
 };
 
 const ProductsFirstLoad = () => {
+  const [searchParams] = useSearchParams();
   const dispatch = useDispatch();
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dispatch<any>(initializeProducts());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchParams]);
 
   const products = useSelector((state: RootState) => {
     return state.products;
@@ -60,19 +65,20 @@ const ProductsFirstLoad = () => {
   );
 };
 
-const ProductsNotFirstLoad = (param: { currQuer: string }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ProductsNotFirstLoad = (props: any) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dispatch<any>(setFilteredProducts(param.currQuer));
+    dispatch<any>(setFilteredProducts(props.currQuer));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const products = useSelector((state: RootState) => {
     return state.products;
   });
-
+  // console.log(products);
   return (
     <Container>
       <Row>
@@ -96,19 +102,41 @@ const ProductsNotFirstLoad = (param: { currQuer: string }) => {
 
 const Products = () => {
   const [searchParams] = useSearchParams();
-  const searchQuery = searchParams.get("search");
-  console.log(searchQuery);
-  console.log("when loading products the query state is: " + searchQuery);
 
-  if (searchQuery === "") {
-    return <ProductsFirstLoad />;
-  } else {
-    if (typeof searchQuery === "string") {
-      return <ProductsNotFirstLoad currQuer={searchQuery} />;
-    } else {
-      return <ProductsFirstLoad />;
+  const allowedKeys: (keyof QueryObject)[] = [
+    "min_price",
+    "max_price",
+    "search",
+    "avaliability",
+    "category",
+  ];
+
+  const queryThing = allowedKeys.reduce((acc, key) => {
+    const value = searchParams.get(key);
+    if (value !== null) {
+      acc[key] = value;
     }
-  }
+    return acc;
+  }, {} as QueryObject);
+
+  // console.log("this query thing: " + JSON.stringify(queryThing));
+
+  return (
+    <Container>
+      <Row>
+        <Col sm={2}>
+          <SearchFilters />
+        </Col>
+        <Col sm={10}>
+          {_.isEmpty(queryThing) ? (
+            <ProductsFirstLoad />
+          ) : (
+            <ProductsNotFirstLoad currQuer={queryThing} />
+          )}
+        </Col>
+      </Row>
+    </Container>
+  );
 };
 
 export default Products;

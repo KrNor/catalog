@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import productService from "../services/products";
-import type { SimplifiedProduct } from "../types"; // autofixed to add type
+import type { SimplifiedProduct, QueryObject } from "../types"; // autofixed to add type
 
 const productsSlice = createSlice({
   name: "products",
@@ -17,15 +17,15 @@ export const { setProducts } = productsSlice.actions;
 export const initializeProducts = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (dispatch: any) => {
-    const products = await productService.getAll(); //temporary change change back to getAll later
+    const products = await productService.getAll();
     dispatch(setProducts(products));
   };
 };
 
-export const setFilteredProducts = (queryToUse: string) => {
+export const setFilteredProducts = (queryToUse: QueryObject) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (dispatch: any) => {
-    const products = await productService.getFiltered(queryToUse); //temporary change change back to getAll later
+    const products = await productService.getFiltered(queryToUse);
     dispatch(setProducts(products));
   };
 };

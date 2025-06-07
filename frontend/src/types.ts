@@ -7,6 +7,14 @@ export type RootState = ReturnType<AppStore["getState"]>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = AppStore["dispatch"];
 
+export interface QueryObject {
+  min_price?: string;
+  max_price?: string;
+  search?: string;
+  avaliability?: string;
+  category?: string;
+}
+
 export interface Product extends SimplifiedProduct {
   Identifier: string;
   descriptionLong: string;

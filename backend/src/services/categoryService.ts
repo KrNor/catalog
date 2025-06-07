@@ -69,3 +69,15 @@ export const getProductsByCategory = async (idOfCategory: string) => {
   });
   return products;
 };
+
+export const getCategoryListUnique = async (idOfCategory: string) => {
+  const categoryParents = await Category.find({
+    lineage: idOfCategory,
+  });
+  const uniqueCategoryIds: string[] = [
+    ...new Set(categoryParents.map((category) => category._id.toString())),
+  ];
+
+  const listOfCategories = [...uniqueCategoryIds, idOfCategory];
+  return listOfCategories;
+};

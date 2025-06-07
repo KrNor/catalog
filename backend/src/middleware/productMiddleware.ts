@@ -16,6 +16,83 @@ export const newProductParser = (
   }
 };
 
+const allowedFields = [
+  "min_price",
+  "max_price",
+  "search",
+  "avaliability",
+  "category",
+];
+
+export const parseQueryAdvanced = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
+  const query = req.query;
+  // console.log(query);
+  const filter: Record<string, any> = {};
+
+  const rangeMap: Record<string, { field: string; op: "$gte" | "$lte" }> = {
+    min_price: { field: "price", op: "$gte" },
+    max_price: { field: "price", op: "$lte" },
+  };
+
+  Object.entries(query).forEach(([key, rawValue]) => {
+    let value: any = rawValue;
+    // console.log("this is initial value:" + value);
+
+    if (typeof value === "string") {
+      if (value == "") return;
+      else if (
+        !isNaN(Number(value)) &&
+        !(key === "search" || key === "category")
+      )
+        value = Number(value);
+    }
+
+    // Handle range queries
+    if (key in rangeMap) {
+      const { field, op } = rangeMap[key];
+      if (!filter[field]) filter[field] = {};
+      filter[field][op] = value;
+      return;
+    }
+
+    // Handle normal allowed fields
+    if (allowedFields.includes(key)) {
+      if (key === "search") {
+        filter["name"] = new RegExp(value, "i");
+      } else {
+        filter[key] = value;
+      }
+    }
+  });
+
+  (req as any).mongoFilter = filter;
+  next();
+};
+
+export const productQueryParser = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (
+      req.params.category &&
+      typeof req.params.category === "string" &&
+      mongoose.isValidObjectId(req.params.category)
+    ) {
+      next();
+    } else {
+      throw new Error("bad category id");
+    }
+  } catch (error: unknown) {
+    next(error);
+  }
+};
+
 export const productIdParser = (
   req: Request,
   _res: Response,

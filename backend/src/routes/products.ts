@@ -4,7 +4,7 @@ import express from "express";
 
 import {
   createProduct,
-  getAllSimplifiedProducts,
+  // getAllSimplifiedProducts,
   getProductById,
   deleteProduct,
   addTagToProduct,
@@ -15,6 +15,7 @@ import {
   newProductParser,
   productIdParser,
   categoryIdParser,
+  parseQueryAdvanced,
 } from "../middleware/productMiddleware";
 
 import { tagParser } from "../middleware/tagMiddleware";
@@ -77,17 +78,11 @@ router.get("/:id", productIdParser, async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
-  const search = req.query.search || "";
-  console.log(search);
-  if (!(search === "") && typeof search === "string") {
-    // no fancy searches for now
-    const products = await getFilteredSimplifiedProducts(search);
-    res.json(products);
-  } else {
-    const products = await getAllSimplifiedProducts();
-    res.json(products);
-  }
+router.get("/", parseQueryAdvanced, async (req: any, res) => {
+  const filter = req.mongoFilter || {};
+  // console.log(filter);
+  const products = await getFilteredSimplifiedProducts(filter);
+  res.json(products);
 });
 
 router.delete("/:id", productIdParser, async (req, res) => {

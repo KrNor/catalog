@@ -1,5 +1,5 @@
 import Product from "../models/product";
-import { getCategoryById } from "./categoryService";
+import { getCategoryById, getCategoryListUnique } from "./categoryService";
 import { createTag } from "./tagService";
 import { zodProductType, zodTagToSaveType } from "../types";
 
@@ -13,7 +13,6 @@ export const createProduct = async (object: zodProductType) => {
       throw new Error("specified category doesn't exist");
     }
   }
-  console.log(productToSave);
 
   if (!(productToSave.tags === undefined)) {
     productToSave.tags.forEach(async (tagg) => {
@@ -53,12 +52,27 @@ export const getAllSimplifiedProducts = async () => {
   return allProducts;
 };
 
-export const getFilteredSimplifiedProducts = async (searchTerm: string) => {
-  const filteredProducts = await Product.find(
-    { name: new RegExp(searchTerm, "i") },
-    "name price avaliability descriptionShort category id "
-  );
-  return filteredProducts;
+export const getFilteredSimplifiedProducts = async (
+  filter: Record<string, any>
+) => {
+  if ("category" in filter) {
+    const listOfCategories = await getCategoryListUnique(filter.category);
+    const filteredProducts = await Product.find(
+      {
+        ...filter,
+        category: { $in: listOfCategories },
+      },
+      "name price avaliability descriptionShort category id "
+    );
+    return filteredProducts;
+  } else {
+    // console.log(filter);
+    const filteredProducts = await Product.find(
+      filter,
+      "name price avaliability descriptionShort category id "
+    );
+    return filteredProducts;
+  }
 };
 
 export const getProductById = async (idOfProduct: string) => {
@@ -66,7 +80,6 @@ export const getProductById = async (idOfProduct: string) => {
     idOfProduct,
     "name price avaliability Identifier descriptionShort descriptionLong category tags idname price avaliability Identifier descriptionShort descriptionLong category tags id"
   ).exec();
-  // console.log(wantedProduct);
   return wantedProduct;
 };
 
@@ -80,8 +93,6 @@ export const addTagToProduct = async (
   tagObject: zodTagToSaveType
 ) => {
   const wantedProduct = await Product.findById(idOfProduct).exec();
-  console.log(wantedProduct);
-  console.log(tagObject);
 
   if (wantedProduct) {
     const tagsss = await wantedProduct.tags.find(
@@ -109,6 +120,5 @@ export const removeTagFromProduct = async (
     { new: true }
   );
 
-  console.log(wantedProduct);
   return wantedProduct;
 };

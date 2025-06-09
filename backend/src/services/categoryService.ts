@@ -22,11 +22,10 @@ export const createCategory = async (object: zodCategoryType) => {
 
   //   console.log(categoryToSave);
 
-  const new_category = new Category(categoryToSave);
+  const newCategory = new Category(categoryToSave);
 
-  await new_category.save();
-  //   console.log(new_category);
-  return new_category;
+  await newCategory.save();
+  return newCategory;
 };
 
 export const getCategoryById = async (idOfCategory: string) => {

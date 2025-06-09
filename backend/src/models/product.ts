@@ -12,7 +12,7 @@ const schema = new mongoose.Schema<Product>(
     },
     price: Number, // saved in cents
     avaliability: Number,
-    Identifier: String,
+    identifier: String,
     descriptionShort: String,
     descriptionLong: String,
     category: {

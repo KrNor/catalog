@@ -17,8 +17,8 @@ export const newProductParser = (
 };
 
 const allowedFields = [
-  "min_price",
-  "max_price",
+  "minPrice",
+  "maxPrice",
   "search",
   "avaliability",
   "category",
@@ -34,8 +34,8 @@ export const parseQueryAdvanced = (
   const filter: Record<string, any> = {};
 
   const rangeMap: Record<string, { field: string; op: "$gte" | "$lte" }> = {
-    min_price: { field: "price", op: "$gte" },
-    max_price: { field: "price", op: "$lte" },
+    minPrice: { field: "price", op: "$gte" },
+    maxPrice: { field: "price", op: "$lte" },
   };
 
   Object.entries(query).forEach(([key, rawValue]) => {

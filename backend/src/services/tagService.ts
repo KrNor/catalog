@@ -16,12 +16,12 @@ export const createTag = async (object: zodTagToSaveType) => {
     }
     return tagToDoThings;
   } else {
-    const new_tag = new Tag({
+    const newTag = new Tag({
       ...tagToSave,
       tagAttributes: [tagToSave.tagAttribute],
     });
-    await new_tag.save();
-    return new_tag;
+    await newTag.save();
+    return newTag;
   }
 };
 

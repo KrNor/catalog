@@ -31,15 +31,15 @@ export const createProduct = async (object: zodProductType) => {
       }
     });
   }
-  const new_product = new Product(productToSave);
-  await new_product.save();
-  return new_product;
+  const newProduct = new Product(productToSave);
+  await newProduct.save();
+  return newProduct;
 };
 
 export const getAllProducts = async () => {
   const allProducts = await Product.find(
     {},
-    "name price avaliability Identifier descriptionShort descriptionLong category tags id "
+    "name price avaliability identifier descriptionShort descriptionLong category tags id "
   );
   return allProducts;
 };
@@ -78,7 +78,7 @@ export const getFilteredSimplifiedProducts = async (
 export const getProductById = async (idOfProduct: string) => {
   const wantedProduct = await Product.findById(
     idOfProduct,
-    "name price avaliability Identifier descriptionShort descriptionLong category tags idname price avaliability Identifier descriptionShort descriptionLong category tags id"
+    "name price avaliability identifier descriptionShort descriptionLong category tags idname price avaliability id"
   ).exec();
   return wantedProduct;
 };

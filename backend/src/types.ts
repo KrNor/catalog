@@ -4,7 +4,7 @@ export interface Product {
   name: String;
   price: Number; // saved in cents
   avaliability: Number;
-  Identifier: String;
+  identifier: String;
   descriptionShort: String;
   descriptionLong: String;
   category: String;
@@ -49,7 +49,7 @@ export const zodProduct = z.object({
   name: z.string().min(3),
   price: z.number().nonnegative(),
   avaliability: z.number().gte(-4),
-  Identifier: z.string(),
+  identifier: z.string(),
   descriptionShort: z.string().min(3),
   descriptionLong: z.string().min(3),
   category: z

@@ -36,11 +36,11 @@ export const parseQueryAdvanced = (
   const rangeMap: Record<string, { field: string; op: "$gte" | "$lte" }> = {
     minPrice: { field: "price", op: "$gte" },
     maxPrice: { field: "price", op: "$lte" },
+    avaliability: { field: "avaliability", op: "$gte" },
   };
 
   Object.entries(query).forEach(([key, rawValue]) => {
     let value: any = rawValue;
-    // console.log("this is initial value:" + value);
 
     if (typeof value === "string") {
       if (value == "") return;
@@ -68,7 +68,7 @@ export const parseQueryAdvanced = (
       }
     }
   });
-
+  // console.log(filter);
   (req as any).mongoFilter = filter;
   next();
 };

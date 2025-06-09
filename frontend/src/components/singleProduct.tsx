@@ -54,7 +54,7 @@ const SingleProductDetailed = () => {
                 <Card.Text>{product.descriptionShort}</Card.Text>
                 <Card.Text>{product.price}</Card.Text>
                 <Card.Text>{product.avaliability}</Card.Text>
-                <Card.Text>{product.Identifier}</Card.Text>
+                <Card.Text>{product.identifier}</Card.Text>
                 <Card.Text>{product.descriptionShort}</Card.Text>
                 <Card.Text>{product.descriptionLong}</Card.Text>
                 <Card.Text>{product.id}</Card.Text>

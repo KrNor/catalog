@@ -104,8 +104,8 @@ const Products = () => {
   const [searchParams] = useSearchParams();
 
   const allowedKeys: (keyof QueryObject)[] = [
-    "min_price",
-    "max_price",
+    "minPrice",
+    "maxPrice",
     "search",
     "avaliability",
     "category",

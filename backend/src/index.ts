@@ -28,15 +28,30 @@ import CategoryRouter from "./routes/categories";
 
 import TagRouter from "./routes/tags";
 
+import UserRouter from "./routes/user";
+
+import loginRouter from "./routes/login";
+
+import {
+  zodErrorMiddleware,
+  mongooseErrorMiddleware,
+  genericErrorMiddleware,
+} from "./middleware/errorMiddleware";
+
+app.use("/api/login", loginRouter);
 app.use("/api/product", ProductRouter);
 app.use("/api/category", CategoryRouter);
 app.use("/api/tag", TagRouter);
+app.use("/api/user", UserRouter);
 
 app.get("/", (_req, res) => {
   console.log("someone pinged here");
   res.send("pong");
 });
 
+app.use(zodErrorMiddleware);
+app.use(mongooseErrorMiddleware);
+app.use(genericErrorMiddleware);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

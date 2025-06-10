@@ -7,7 +7,6 @@ import {
   deleteCategory,
   getProductsByCategory,
 } from "../services/categoryService";
-import { errorMiddleware } from "../middleware/errorMiddleware";
 import {
   newCategoryParser,
   categoryIdParser,
@@ -45,7 +44,6 @@ router.post("/", newCategoryParser, async (req, res) => {
 
 router.delete("/:id", categoryIdParser, async (req, res) => {
   const deletedCategory = await deleteCategory(req.params.id);
-  // console.log(deletedProduct);
   if (!deletedCategory) {
     res
       .status(400)
@@ -54,7 +52,5 @@ router.delete("/:id", categoryIdParser, async (req, res) => {
     res.json(deletedCategory);
   }
 });
-
-router.use(errorMiddleware);
 
 export default router;

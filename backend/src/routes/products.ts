@@ -21,8 +21,6 @@ import {
 import { tagParser } from "../middleware/tagMiddleware";
 import { getCategoryById } from "../services/categoryService";
 
-import { errorMiddleware } from "../middleware/errorMiddleware";
-
 const router = express.Router();
 
 router.post("/:id/tag", productIdParser, tagParser, async (req, res) => {
@@ -94,7 +92,5 @@ router.delete("/:id", productIdParser, async (req, res) => {
     res.json(deletedProduct);
   }
 });
-
-router.use(errorMiddleware);
 
 export default router;

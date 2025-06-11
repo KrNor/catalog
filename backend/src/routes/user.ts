@@ -13,7 +13,6 @@ router.post("/", async (request, response) => {
 
 router.get("/", async (_req, res) => {
   const products = await getAllUsers();
-  // console.log(products);
   res.json(products);
 });
 

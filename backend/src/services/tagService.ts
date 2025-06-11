@@ -1,39 +1,56 @@
-import Tag from "../models/tag";
+import Tag, { TagDocument } from "../models/tag";
 // import Category from "../models/category";
-import { zodTagToSaveType } from "../types";
+import { TagWithArray, TagInsideProduct } from "../types";
 
-export const createTag = async (object: zodTagToSaveType) => {
-  const tagToSave = {
-    ...object,
-  };
-  const tagToDoThings = await getTagByName(tagToSave.tagName);
-  console.log(tagToSave);
+export const createTag = async (
+  object: TagInsideProduct
+): Promise<TagDocument> => {
+  const tagToDoThings = await Tag.findOne<TagDocument>({
+    tagName: object.tagName,
+  }).exec();
+  // await Tag.findOne({ tagName: nameOfTag }).exec();
+  console.log(tagToDoThings);
 
   if (tagToDoThings) {
-    if (!tagToDoThings.tagAttributes.includes(tagToSave.tagAttribute)) {
-      tagToDoThings.tagAttributes.push(tagToSave.tagAttribute);
+    if (
+      tagToDoThings.tagAttributes &&
+      !tagToDoThings.tagAttributes.includes(object.tagAttribute)
+    ) {
+      tagToDoThings.tagAttributes.push(object.tagAttribute);
       await tagToDoThings.save();
     }
     return tagToDoThings;
   } else {
-    const newTag = new Tag({
-      ...tagToSave,
-      tagAttributes: [tagToSave.tagAttribute],
+    const newTag: TagDocument = new Tag({
+      ...object,
+      tagAttributes: [object.tagAttribute],
     });
     await newTag.save();
+
     return newTag;
   }
 };
 
-export const getAllTags = async () => {
-  const allTags = await Tag.find({}, "tagName tagAttributes id");
+export const getAllTags = async (): Promise<TagDocument[]> => {
+  const allTags: TagDocument[] = await Tag.find(
+    {},
+    "tagName tagAttributes id"
+  ).exec();
   return allTags;
 };
 
-export const getTagByName = async (nameOfTag: string) => {
-  const wantedTag = await Tag.findOne({ tagName: nameOfTag }).exec();
-  // console.log(wantedTag);
+export const getTagByName = async (
+  nameOfTag: string
+): Promise<TagWithArray | null> => {
+  const wantedTag = await Tag.findOne<TagDocument>({
+    tagName: nameOfTag,
+  }).exec();
+  if (wantedTag) {
+    wantedTag.toJSON();
+    return wantedTag;
+  }
   return wantedTag;
+  // console.log(wantedTag);
 };
 
 // export const getTagById = async (idOfTag: string) => {
@@ -42,8 +59,10 @@ export const getTagByName = async (nameOfTag: string) => {
 //   return wantedTag;
 // };
 
-export const deleteTag = async (object: zodTagToSaveType) => {
-  const wantedTag = await Tag.findOneAndUpdate(
+export const deleteTag = async (
+  object: TagInsideProduct
+): Promise<TagDocument | null> => {
+  const wantedTag = await Tag.findOneAndUpdate<TagDocument>(
     {
       tagName: object.tagName,
       tagAttributes: object.tagAttribute,
@@ -54,9 +73,11 @@ export const deleteTag = async (object: zodTagToSaveType) => {
       },
     }
   );
-
-  // replace with 1 call to do both later
-  const wantedTag2 = await Tag.findOne({
+  if (wantedTag === null) {
+    return null;
+  }
+  // replace with 1 call to do both later ( or might not be possible)
+  const wantedTag2 = await Tag.findOne<TagDocument>({
     tagName: object.tagName,
   });
 

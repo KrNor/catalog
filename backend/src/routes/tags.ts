@@ -1,10 +1,5 @@
 import express from "express";
 
-// getAllTags,
-// getTagByName,
-// deleteTag,
-// getTagById,
-
 import {
   createTag,
   getAllTags,
@@ -12,7 +7,6 @@ import {
   getTagByName,
 } from "../services/tagService";
 import { tagParser } from "../middleware/tagMiddleware";
-// import { getCategoryById } from "../services/categoryService";
 
 const router = express.Router();
 
@@ -32,13 +26,11 @@ router.post("/", tagParser, async (req, res) => {
 
 router.get("/", async (_req, res) => {
   const products = await getAllTags();
-  // console.log(products);
   res.json(products);
 });
 
 router.delete("/", tagParser, async (req, res) => {
   const deletedTag = await deleteTag(req.body);
-  // console.log(deletedTag);
   if (!deletedTag) {
     res.status(400).json({ error: "something went wrong with tag deletion" });
   } else {

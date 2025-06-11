@@ -49,16 +49,17 @@ export const mongooseErrorMiddleware = (
   next(error);
 };
 
+// ,_next: NextFunction;
 export const genericErrorMiddleware = (
   error: unknown,
   _req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
 ) => {
   if (error instanceof Error) {
     res.status(400).send({ error: error.message });
     return;
   } else {
-    next(error);
+    res.status(400).send({ error: "unknown error" });
+    return;
   }
 };

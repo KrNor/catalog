@@ -1,7 +1,15 @@
-import mongoose from "mongoose";
-import { Category } from "../types";
+import mongoose, { Document, Types } from "mongoose";
 
-const schema = new mongoose.Schema<Category>(
+export interface MongooseCategory {
+  name: string;
+  description: string;
+  parent: Types.ObjectId;
+  lineage: Types.ObjectId[];
+}
+
+export interface CategoryDocument extends MongooseCategory, Document {}
+
+const schema = new mongoose.Schema<CategoryDocument>(
   {
     name: {
       type: String,
@@ -10,7 +18,7 @@ const schema = new mongoose.Schema<Category>(
       unique: true,
       index: true,
     },
-    description: String,
+    description: { type: String, required: true, trim: true },
     parent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
@@ -34,4 +42,6 @@ schema.set("toJSON", {
   },
 });
 
-export default mongoose.model<Category>("Category", schema);
+const Category = mongoose.model<CategoryDocument>("Category", schema);
+
+export default Category;

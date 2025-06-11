@@ -33,13 +33,13 @@ router.get("/:id", categoryIdParser, async (req, res) => {
 });
 
 router.get("/", async (_req, res) => {
-  const products = await getAllCategories();
-  res.json(products);
+  const category = await getAllCategories();
+  res.json(category);
 });
 
 router.post("/", newCategoryParser, async (req, res) => {
-  const newProduct = await createCategory(req.body);
-  res.json(newProduct);
+  const newCategory = await createCategory(req.body);
+  res.json(newCategory);
 });
 
 router.delete("/:id", categoryIdParser, async (req, res) => {

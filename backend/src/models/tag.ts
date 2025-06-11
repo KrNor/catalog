@@ -1,7 +1,12 @@
-import mongoose from "mongoose";
-import { Tag } from "../types";
+import mongoose, { Document } from "mongoose";
 
-const schema = new mongoose.Schema<Tag>(
+export interface MongooseTag {
+  tagName: string;
+  tagAttributes: string[];
+}
+export interface TagDocument extends MongooseTag, Document {}
+
+const schema = new mongoose.Schema<TagDocument>(
   {
     tagName: {
       type: String,
@@ -28,4 +33,6 @@ schema.set("toJSON", {
   },
 });
 
-export default mongoose.model("Tags", schema);
+const Tag = mongoose.model<TagDocument>("Tag", schema);
+
+export default Tag;

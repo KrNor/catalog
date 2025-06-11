@@ -1,10 +1,13 @@
 import bcrypt from "bcrypt";
-import User from "../models/user";
+import User, { UserDocument } from "../models/user";
 
 // import Category from "../models/category";
 // import { zodTagToSaveType } from "../types";
 
-export const createUser = async (username: string, password: string) => {
+export const createUser = async (
+  username: string,
+  password: string
+): Promise<UserDocument> => {
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
@@ -13,11 +16,11 @@ export const createUser = async (username: string, password: string) => {
     passwordHash,
   });
 
-  const savedUser = await user.save();
+  const savedUser: UserDocument = await user.save();
   return savedUser;
 };
 
-export const getAllUsers = async () => {
-  const allTags = await User.find({});
+export const getAllUsers = async (): Promise<UserDocument[]> => {
+  const allTags: UserDocument[] = await User.find({});
   return allTags;
 };

@@ -1,39 +1,20 @@
 import z from "zod";
 import mongoose from "mongoose";
-export interface Product {
-  name: String;
-  price: Number; // saved in cents
-  avaliability: Number;
-  identifier: String;
-  descriptionShort: String;
-  descriptionLong: String;
-  category: String;
-  tags: [TagToSave];
-}
 
-export interface Category {
-  name: String;
-  description: String;
-  parent: String;
-  lineage: [String];
-}
-
-export interface Tag {
-  tagName: String;
-  tagAttributes: [String];
-}
-
-export interface TagToSave {
-  tagName: String;
-  tagAttribute: String;
-}
+export type QueryObject = {
+  minPrice?: string;
+  maxPrice?: string;
+  search?: string;
+  avaliability?: string;
+  category?: string;
+};
 
 export const zodTag = z.object({
   tagName: z.string(),
   tagAttributes: z.array(z.string().optional()),
 });
 
-export const zodTagToSave = z.object({
+export const zodTagInsideProduct = z.object({
   tagName: z.string(),
   tagAttribute: z.string(),
 });
@@ -58,10 +39,44 @@ export const zodProduct = z.object({
       return mongoose.Types.ObjectId.isValid(val);
     })
     .optional(),
-  tags: z.array(zodTagToSave),
+  tags: z.array(zodTagInsideProduct),
 });
 
-export type zodTagToSaveType = z.infer<typeof zodTagToSave>;
-export type zodTagType = z.infer<typeof zodTag>;
-export type zodProductType = z.infer<typeof zodProduct>;
-export type zodCategoryType = z.infer<typeof zodCategory>;
+export type TagInsideProduct = z.infer<typeof zodTagInsideProduct>;
+export type TagWithArray = z.infer<typeof zodTag>;
+export type ProductType = z.infer<typeof zodProduct>;
+export type CategoryType = z.infer<typeof zodCategory>;
+
+export const zodTagWithId = z.object({
+  ...zodTag.shape,
+  id: z.string(),
+});
+
+export const zodTagInsideProductWithId = z.object({
+  ...zodTagInsideProduct.shape,
+  id: z.string(),
+});
+
+export const zodProductWithId = z.object({
+  ...zodProduct.shape,
+  id: z.string(),
+});
+
+export const zodCategoryWithId = z.object({
+  ...zodCategory.shape,
+  id: z.string(),
+});
+
+export type TagWithArrayWithId = z.infer<typeof zodTagWithId>;
+export type TagInsideProductWithId = z.infer<typeof zodTagInsideProductWithId>;
+export type ProductWithId = z.infer<typeof zodProductWithId>;
+export type CategoryWithId = z.infer<typeof zodCategoryWithId>;
+
+export interface SimplifiedProduct {
+  name: string;
+  price: number; // saved in cents
+  avaliability: number;
+  descriptionShort: string;
+  category: string;
+  id: string;
+}

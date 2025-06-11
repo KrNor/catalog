@@ -24,13 +24,14 @@ const allowedFields = [
   "category",
 ];
 
+// todo: find alternative to this
 export const parseQueryAdvanced = (
   req: Request,
   _res: Response,
   next: NextFunction
 ) => {
   const query = req.query;
-  // console.log(query);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const filter: Record<string, any> = {};
 
   const rangeMap: Record<string, { field: string; op: "$gte" | "$lte" }> = {
@@ -40,6 +41,7 @@ export const parseQueryAdvanced = (
   };
 
   Object.entries(query).forEach(([key, rawValue]) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let value: any = rawValue;
 
     if (typeof value === "string") {
@@ -68,29 +70,9 @@ export const parseQueryAdvanced = (
       }
     }
   });
-  // console.log(filter);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (req as any).mongoFilter = filter;
   next();
-};
-
-export const productQueryParser = (
-  req: Request,
-  _res: Response,
-  next: NextFunction
-) => {
-  try {
-    if (
-      req.params.category &&
-      typeof req.params.category === "string" &&
-      mongoose.isValidObjectId(req.params.category)
-    ) {
-      next();
-    } else {
-      throw new Error("bad category id");
-    }
-  } catch (error: unknown) {
-    next(error);
-  }
 };
 
 export const productIdParser = (

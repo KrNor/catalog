@@ -1,7 +1,20 @@
-import mongoose from "mongoose";
-import { Product } from "../types";
+import mongoose, { Types, Document } from "mongoose";
+import { TagInsideProduct } from "../types";
 
-const schema = new mongoose.Schema<Product>(
+export interface MongooseProduct {
+  name: string;
+  price: number; // saved in cents
+  avaliability: number;
+  identifier: string;
+  descriptionShort: string;
+  descriptionLong: string;
+  category: Types.ObjectId;
+  tags: TagInsideProduct[];
+}
+
+export interface ProductDocument extends MongooseProduct, Document {}
+
+const schema = new mongoose.Schema<ProductDocument>(
   {
     name: {
       type: String,
@@ -9,14 +22,21 @@ const schema = new mongoose.Schema<Product>(
       trim: true,
       unique: true,
       index: true,
+      minLength: 3,
     },
-    price: Number, // saved in cents
-    avaliability: Number,
-    identifier: String,
-    descriptionShort: String,
-    descriptionLong: String,
+    price: { type: Number, required: true, trim: true }, // saved in cents
+    avaliability: { type: Number, required: true, min: -4, trim: true },
+    identifier: { type: String, required: true, trim: true },
+    descriptionShort: {
+      type: String,
+      required: true,
+      minLength: 3,
+      trim: true,
+    },
+    descriptionLong: { type: String, required: true, minLength: 3, trim: true },
     category: {
       type: mongoose.Schema.Types.ObjectId,
+      required: true,
       ref: "Category",
     },
     tags: [
@@ -36,4 +56,7 @@ schema.set("toJSON", {
     delete returnedObject.__v;
   },
 });
-export default mongoose.model<Product>("Product", schema);
+
+const Product = mongoose.model<ProductDocument>("Product", schema);
+
+export default Product;

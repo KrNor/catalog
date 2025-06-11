@@ -1,21 +1,24 @@
-import Product from "../models/product";
+import Product, { ProductDocument } from "../models/product";
 import { getCategoryById, getCategoryListUnique } from "./categoryService";
 import { createTag } from "./tagService";
-import { zodProductType, zodTagToSaveType } from "../types";
+import { ProductType, TagInsideProduct } from "../types";
+//SimplifiedProduct
 
-export const createProduct = async (object: zodProductType) => {
-  const productToSave = {
-    ...object,
-  };
-  if (productToSave.category) {
-    const wantedCategory = await getCategoryById(productToSave.category);
+export const createProduct = async (
+  object: ProductType
+): Promise<ProductDocument> => {
+  // const productToSave = {
+  //   ...object,
+  // };
+  if (object.category) {
+    const wantedCategory = await getCategoryById(object.category);
     if (!wantedCategory) {
       throw new Error("specified category doesn't exist");
     }
   }
 
-  if (!(productToSave.tags === undefined)) {
-    productToSave.tags.forEach(async (tagg) => {
+  if (!(object.tags === undefined)) {
+    object.tags.forEach(async (tagg) => {
       if (!(tagg === undefined)) {
         const returnedTag = await createTag(tagg);
         if (returnedTag.tagName) {
@@ -31,21 +34,23 @@ export const createProduct = async (object: zodProductType) => {
       }
     });
   }
-  const newProduct = new Product(productToSave);
+  const newProduct: ProductDocument = new Product(object);
   await newProduct.save();
   return newProduct;
 };
 
-export const getAllProducts = async () => {
-  const allProducts = await Product.find(
+export const getAllProducts = async (): Promise<ProductDocument[]> => {
+  const allProducts: ProductDocument[] = await Product.find(
     {},
     "name price avaliability identifier descriptionShort descriptionLong category tags id "
   );
   return allProducts;
 };
 
-export const getAllSimplifiedProducts = async () => {
-  const allProducts = await Product.find(
+export const getAllSimplifiedProducts = async (): Promise<
+  ProductDocument[]
+> => {
+  const allProducts: ProductDocument[] = await Product.find(
     {},
     "name price avaliability descriptionShort category id "
   );
@@ -53,8 +58,9 @@ export const getAllSimplifiedProducts = async () => {
 };
 
 export const getFilteredSimplifiedProducts = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filter: Record<string, any>
-) => {
+): Promise<ProductDocument[]> => {
   if ("category" in filter) {
     const listOfCategories = await getCategoryListUnique(filter.category);
     const filteredProducts = await Product.find(
@@ -75,23 +81,27 @@ export const getFilteredSimplifiedProducts = async (
   }
 };
 
-export const getProductById = async (idOfProduct: string) => {
-  const wantedProduct = await Product.findById(
+export const getProductById = async (
+  idOfProduct: string
+): Promise<ProductDocument | null> => {
+  const wantedProduct = await Product.findById<ProductDocument>(
     idOfProduct,
     "name price avaliability identifier descriptionShort descriptionLong category tags idname price avaliability id"
   ).exec();
   return wantedProduct;
 };
 
-export const deleteProduct = async (idOfProduct: string) => {
+export const deleteProduct = async (
+  idOfProduct: string
+): Promise<ProductDocument | null> => {
   const wantedProduct = await Product.findByIdAndDelete(idOfProduct).exec();
   return wantedProduct;
 };
 
 export const addTagToProduct = async (
   idOfProduct: string,
-  tagObject: zodTagToSaveType
-) => {
+  tagObject: TagInsideProduct
+): Promise<ProductDocument | null> => {
   const wantedProduct = await Product.findById(idOfProduct).exec();
 
   if (wantedProduct) {
@@ -110,11 +120,12 @@ export const addTagToProduct = async (
 
   return wantedProduct;
 };
+
 export const removeTagFromProduct = async (
   idOfProduct: string,
-  tagObject: zodTagToSaveType
-) => {
-  const wantedProduct = await Product.findByIdAndUpdate(
+  tagObject: TagInsideProduct
+): Promise<ProductDocument | null> => {
+  const wantedProduct = await Product.findByIdAndUpdate<ProductDocument>(
     idOfProduct,
     { $pull: { tags: { tagName: tagObject.tagName } } },
     { new: true }

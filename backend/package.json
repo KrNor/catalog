@@ -24,7 +24,6 @@
     "@types/node": "^22.15.31",
     "bcrypt": "^6.0.0",
     "eslint": "^9.28.0",
-    "nodemon": "^3.1.10",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.34.0"

@@ -1,12 +1,13 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
-interface User extends mongoose.Document {
+export interface MongooseUser {
   username: string;
   passwordHash: string;
   role: "admin" | "user";
 }
+export interface UserDocument extends MongooseUser, Document {}
 
-const schema = new mongoose.Schema<User>({
+const schema = new mongoose.Schema<UserDocument>({
   username: {
     type: String,
     required: true,
@@ -32,4 +33,6 @@ schema.set("toJSON", {
   },
 });
 
-export default mongoose.model("Users", schema);
+const User = mongoose.model<UserDocument>("User", schema);
+
+export default User;

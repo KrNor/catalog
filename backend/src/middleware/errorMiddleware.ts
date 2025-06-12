@@ -21,7 +21,10 @@ export const mongooseErrorMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  if (error instanceof mongoose.Error) {
+  if (
+    error instanceof mongoose.Error ||
+    error instanceof mongoose.mongo.MongoError
+  ) {
     if (error.name === "CastError") {
       res.status(400).send({ error: "malformatted id" });
       return;
@@ -44,16 +47,25 @@ export const mongooseErrorMiddleware = (
     } else if (error.name === "TokenExpiredError") {
       res.status(401).json({ error: "token expired" });
       return;
+    } else {
+      res.status(400).json({
+        error: "unknown database error",
+      });
     }
+  } else {
+    next(error);
   }
-  next(error);
+
+  // next(error);
 };
 
-// ,_next: NextFunction;
 export const genericErrorMiddleware = (
   error: unknown,
   _req: Request,
-  res: Response
+  res: Response,
+  // do not remove _next
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _next: NextFunction
 ) => {
   if (error instanceof Error) {
     res.status(400).send({ error: error.message });

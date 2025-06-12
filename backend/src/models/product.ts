@@ -43,6 +43,7 @@ const schema = new mongoose.Schema<ProductDocument>(
       {
         tagName: String,
         tagAttribute: String,
+        _id: false,
       },
     ],
   },

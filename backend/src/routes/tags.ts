@@ -19,9 +19,13 @@ router.get("/:name", async (req, res) => {
   }
 });
 
-router.post("/", tagParser, async (req, res) => {
-  const newProduct = await createTag(req.body);
-  res.json(newProduct);
+router.post("/", tagParser, async (req, res, next) => {
+  try {
+    const newProduct = await createTag(req.body);
+    res.json(newProduct);
+  } catch (error: unknown) {
+    next(error);
+  }
 });
 
 router.get("/", async (_req, res) => {

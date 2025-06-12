@@ -1,5 +1,5 @@
 import Category, { CategoryDocument } from "../models/category";
-import Product from "../models/product";
+import Product, { ProductDocument } from "../models/product";
 import { CategoryType } from "../types";
 import { Types } from "mongoose";
 // import _ from "lodash";
@@ -47,15 +47,13 @@ export const getAllCategories = async (): Promise<CategoryDocument[]> => {
 export const deleteCategory = async (
   idOfCategory: string
 ): Promise<CategoryDocument | null> => {
-  // I remember testing this but don't thing this should work when I read this
   const categoryWithChildren: CategoryDocument | null = await Category.findOne({
     lineage: idOfCategory,
   });
 
-  //   console.log(categoryWithChildren);
   if (categoryWithChildren) {
     throw new Error(
-      `category can't be deleted,all children categories must be deleted first, delete: '${categoryWithChildren.name}'`
+      `Category can't be deleted,all children categories must be deleted first, hint: delete '${categoryWithChildren.name}'`
     );
   }
   const wantedCategory: CategoryDocument | null =
@@ -66,9 +64,10 @@ export const deleteCategory = async (
   return wantedCategory;
 };
 
-// after fixing products ?
-export const getProductsByCategory = async (idOfCategory: string) => {
-  const categoryParents = await Category.find({
+export const getProductsByCategory = async (
+  idOfCategory: string
+): Promise<ProductDocument[]> => {
+  const categoryParents: CategoryDocument[] = await Category.find({
     lineage: idOfCategory,
   });
 
@@ -88,7 +87,7 @@ export const getProductsByCategory = async (idOfCategory: string) => {
 
   const listOfCategories = [...uniqueCategoryIds, idOfCategory];
 
-  const products = await Product.find({
+  const products: ProductDocument[] = await Product.find({
     category: { $in: listOfCategories },
   });
   return products;

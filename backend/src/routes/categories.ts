@@ -37,19 +37,27 @@ router.get("/", async (_req, res) => {
   res.json(category);
 });
 
-router.post("/", newCategoryParser, async (req, res) => {
-  const newCategory = await createCategory(req.body);
-  res.json(newCategory);
+router.post("/", newCategoryParser, async (req, res, next) => {
+  try {
+    const newCategory = await createCategory(req.body);
+    res.json(newCategory);
+  } catch (error: unknown) {
+    next(error);
+  }
 });
 
-router.delete("/:id", categoryIdParser, async (req, res) => {
-  const deletedCategory = await deleteCategory(req.params.id);
-  if (!deletedCategory) {
-    res
-      .status(400)
-      .json({ error: "category with provided id was not deleted" });
-  } else {
-    res.json(deletedCategory);
+router.delete("/:id", categoryIdParser, async (req, res, next) => {
+  try {
+    const deletedCategory = await deleteCategory(req.params.id);
+    if (!deletedCategory) {
+      res
+        .status(400)
+        .json({ error: "category with provided id was not deleted" });
+    } else {
+      res.status(200).json(deletedCategory);
+    }
+  } catch (error: unknown) {
+    next(error);
   }
 });
 

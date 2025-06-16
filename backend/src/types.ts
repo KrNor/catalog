@@ -1,13 +1,23 @@
 import z from "zod";
 import mongoose from "mongoose";
+import { FilterQuery } from "mongoose";
+import { ProductDocument } from "./models/product";
+import { Request } from "express";
 
-export type QueryObject = {
-  minPrice?: string;
-  maxPrice?: string;
-  search?: string;
-  avaliability?: string;
-  category?: string;
-};
+export const zodProductFilter = z.object({
+  minPrice: z.coerce.number().optional(),
+  maxPrice: z.coerce.number().optional(),
+  search: z.string().optional(),
+  availability: z.coerce.number().optional(),
+  category: z.string().optional(),
+});
+
+export type ProductFilter = z.infer<typeof zodProductFilter>;
+
+export const zodFilterInitial = z.object({
+  tagName: z.string(),
+  tagAttributes: z.array(z.string().optional()),
+});
 
 export const zodTag = z.object({
   tagName: z.string(),
@@ -79,4 +89,15 @@ export interface SimplifiedProduct {
   descriptionShort: string;
   category: string;
   id: string;
+}
+
+export const zodUserLogin = z.object({
+  username: z.string().min(3),
+  password: z.string().min(3),
+});
+
+export type UserLoginRequest = z.infer<typeof zodUserLogin>;
+
+export interface RequestWithFilter extends Request {
+  productFilter?: FilterQuery<ProductDocument>;
 }

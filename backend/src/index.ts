@@ -1,12 +1,19 @@
 import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import mongoose from "mongoose";
 
 const app = express();
 
 app.use(cors());
+app.use(
+  cors({
+    // origin: process.env.FRONTEND_URL || "http://localhost:3000", // for security so that only the frontend can make the requests
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 const PORT = 3000;
@@ -22,33 +29,38 @@ const connectDB = async () => {
 };
 connectDB();
 
+app.use(cookieParser());
+
 import ProductRouter from "./routes/products";
 
 import CategoryRouter from "./routes/categories";
 
 import TagRouter from "./routes/tags";
 
-import UserRouter from "./routes/user";
+// import UserRouter from "./routes/user";
 
-import loginRouter from "./routes/login";
+import AuthRouter from "./routes/auth";
 
 import {
   zodErrorMiddleware,
   mongooseErrorMiddleware,
   genericErrorMiddleware,
+  jwtErrorMiddleware,
 } from "./middleware/errorMiddleware";
 
-app.use("/api/login", loginRouter);
+app.use("/api/auth", AuthRouter);
 app.use("/api/product", ProductRouter);
 app.use("/api/category", CategoryRouter);
 app.use("/api/tag", TagRouter);
-app.use("/api/user", UserRouter);
+
+// for future probable user creation
+// app.use("/api/user", UserRouter);
 
 app.get("/", (_req, res) => {
   console.log("someone pinged here");
   res.send("pong");
 });
-
+app.use(jwtErrorMiddleware);
 app.use(zodErrorMiddleware);
 app.use(mongooseErrorMiddleware);
 app.use(genericErrorMiddleware);

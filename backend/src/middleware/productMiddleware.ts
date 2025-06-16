@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { zodProduct } from "../types";
+import { zodProduct, zodProductFilter, RequestWithFilter } from "../types";
 import mongoose from "mongoose";
+import { FilterQuery } from "mongoose";
+import { ProductDocument } from "../models/product";
 
 export const newProductParser = (
   req: Request,
@@ -16,62 +18,44 @@ export const newProductParser = (
   }
 };
 
-const allowedFields = [
-  "minPrice",
-  "maxPrice",
-  "search",
-  "avaliability",
-  "category",
-];
-
-// todo: find alternative to this
 export const parseQueryAdvanced = (
-  req: Request,
-  _res: Response,
+  req: RequestWithFilter,
+  res: Response,
   next: NextFunction
 ) => {
-  const query = req.query;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const filter: Record<string, any> = {};
+  const parseResult = zodProductFilter.safeParse(req.query);
 
-  const rangeMap: Record<string, { field: string; op: "$gte" | "$lte" }> = {
-    minPrice: { field: "price", op: "$gte" },
-    maxPrice: { field: "price", op: "$lte" },
-    avaliability: { field: "avaliability", op: "$gte" },
-  };
+  if (!parseResult.success) {
+    res.status(400).json({ error: parseResult.error.flatten() });
+    return;
+  }
 
-  Object.entries(query).forEach(([key, rawValue]) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let value: any = rawValue;
+  const { minPrice, maxPrice, search, availability, category } =
+    parseResult.data;
 
-    if (typeof value === "string") {
-      if (value == "") return;
-      else if (
-        !isNaN(Number(value)) &&
-        !(key === "search" || key === "category")
-      )
-        value = Number(value);
-    }
+  const filterToPass: FilterQuery<ProductDocument> = {};
 
-    // Handle range queries
-    if (key in rangeMap) {
-      const { field, op } = rangeMap[key];
-      if (!filter[field]) filter[field] = {};
-      filter[field][op] = value;
-      return;
-    }
+  if (minPrice !== undefined || maxPrice !== undefined) {
+    filterToPass.price = {};
+    if (minPrice !== undefined) filterToPass.price.$gte = minPrice;
+    if (maxPrice !== undefined) filterToPass.price.$lte = maxPrice;
+  }
 
-    // Handle normal allowed fields
-    if (allowedFields.includes(key)) {
-      if (key === "search") {
-        filter["name"] = new RegExp(value, "i");
-      } else {
-        filter[key] = value;
-      }
-    }
-  });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (req as any).mongoFilter = filter;
+  if (search) {
+    filterToPass.name = { $regex: search, $options: "i" };
+  }
+
+  if (availability) {
+    filterToPass.availability.$gte = availability;
+  }
+
+  if (category) {
+    filterToPass.category = category;
+  }
+
+  console.log(filterToPass);
+
+  req.productFilter = filterToPass;
   next();
 };
 

@@ -14,6 +14,7 @@ const schema = new mongoose.Schema<UserDocument>({
     trim: true,
     unique: true,
     index: true,
+    minLength: 3,
   },
   passwordHash: String,
   role: {

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import z from "zod";
+import jwt from "jsonwebtoken";
 
 export const zodErrorMiddleware = (
   error: unknown,
@@ -73,5 +74,20 @@ export const genericErrorMiddleware = (
   } else {
     res.status(400).send({ error: "unknown error" });
     return;
+  }
+};
+
+export const jwtErrorMiddleware = (
+  error: unknown,
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (error instanceof jwt.TokenExpiredError) {
+    res.status(401).json({ error: "Token expired" });
+  } else if (error instanceof jwt.JsonWebTokenError) {
+    res.status(401).json({ error: "Invalid token" });
+  } else {
+    next(error);
   }
 };

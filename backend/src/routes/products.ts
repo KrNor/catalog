@@ -16,6 +16,7 @@ import {
 
 import { tagParser } from "../middleware/tagMiddleware";
 import { getCategoryById } from "../services/categoryService";
+import { RequestWithFilter } from "../types";
 
 const router = express.Router();
 
@@ -69,11 +70,14 @@ router.get("/:id", productIdParser, async (req, res) => {
   }
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-router.get("/", parseQueryAdvanced, async (req: any, res) => {
-  const filter = req.mongoFilter || {};
-  const products = await getFilteredSimplifiedProducts(filter);
-  res.json(products);
+router.get("/", parseQueryAdvanced, async (req: RequestWithFilter, res) => {
+  if (!(req.productFilter === undefined)) {
+    const products = await getFilteredSimplifiedProducts(req.productFilter);
+    res.json(products);
+  } else {
+    const products = await getFilteredSimplifiedProducts({});
+    res.json(products);
+  }
 });
 
 router.delete("/:id", productIdParser, async (req, res) => {

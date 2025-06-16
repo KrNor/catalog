@@ -2,7 +2,7 @@ import Product, { ProductDocument } from "../models/product";
 import { getCategoryById, getCategoryListUnique } from "./categoryService";
 import { createTag } from "./tagService";
 import { ProductType, TagInsideProduct } from "../types";
-//SimplifiedProduct
+// import { FilterQuery } from "mongoose";
 
 export const createProduct = async (
   object: ProductType
@@ -59,9 +59,10 @@ export const getAllSimplifiedProducts = async (): Promise<
 
 export const getFilteredSimplifiedProducts = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  filter: Record<string, any>
+  filter: any
 ): Promise<ProductDocument[]> => {
-  if ("category" in filter) {
+  // console.log(filter);
+  if (filter && "category" in filter) {
     const listOfCategories = await getCategoryListUnique(filter.category);
     const filteredProducts = await Product.find(
       {

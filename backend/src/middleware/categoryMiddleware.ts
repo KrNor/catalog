@@ -9,7 +9,6 @@ export const newCategoryParser = (
 ) => {
   try {
     const returnedCategory = zodCategory.parse(req.body);
-    // console.log(returnedCategory);
     req.body = returnedCategory;
     next();
   } catch (error: unknown) {

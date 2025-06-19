@@ -10,7 +10,7 @@ export const zodErrorMiddleware = (
   next: NextFunction
 ) => {
   if (error instanceof z.ZodError) {
-    res.status(400).send({ error: error.issues });
+    res.status(400).send({ error: error.issues[0].message });
   } else {
     next(error);
   }
@@ -26,54 +26,39 @@ export const mongooseErrorMiddleware = (
     error instanceof mongoose.Error ||
     error instanceof mongoose.mongo.MongoError
   ) {
-    if (error.name === "CastError") {
-      res.status(400).send({ error: "malformatted id" });
-      return;
-    } else if (error.name === "ValidationError") {
-      res.status(400).json({ error: error.message });
-      return;
-    } else if (
-      error.name === "MongoServerError" &&
-      error.message.includes("E11000 duplicate key error")
-    ) {
-      res.status(400).json({
-        error: "expected `username` to be unique",
-      });
-      return;
-    } else if (error.name === "JsonWebTokenError") {
-      res.status(401).json({
-        error: "invalid token",
-      });
-      return;
-    } else if (error.name === "TokenExpiredError") {
-      res.status(401).json({ error: "token expired" });
-      return;
-    } else {
-      res.status(400).json({
-        error: "unknown database error",
-      });
+    switch (error.name) {
+      case "CastError":
+        res.status(400).send({ error: "Badly typed id" });
+        return;
+      case "ValidationError":
+        res.status(400).send({ error: "Failed to validate the request" });
+        return;
+      case "MongoServerError":
+        if (error.message.includes("E11000 duplicate key error")) {
+          res
+            .status(400)
+            .send({ error: "An expected unique value was not unique" });
+        } else {
+          res.status(400).send({ error: "Unknown database error" });
+        }
+        return;
+      case "JsonWebTokenError":
+        res.status(401).json({
+          error: "Invalid token",
+        });
+        return;
+      case "TokenExpiredError":
+        res.status(401).json({ error: "Token expired" });
+        return;
+
+      default:
+        res.status(400).json({
+          error: "Unknown database error",
+        });
+        return;
     }
   } else {
     next(error);
-  }
-
-  // next(error);
-};
-
-export const genericErrorMiddleware = (
-  error: unknown,
-  _req: Request,
-  res: Response,
-  // do not remove _next
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _next: NextFunction
-) => {
-  if (error instanceof Error) {
-    res.status(400).send({ error: error.message });
-    return;
-  } else {
-    res.status(400).send({ error: "unknown error" });
-    return;
   }
 };
 
@@ -89,5 +74,22 @@ export const jwtErrorMiddleware = (
     res.status(401).json({ error: "Invalid token" });
   } else {
     next(error);
+  }
+};
+
+export const genericErrorMiddleware = (
+  error: unknown,
+  _req: Request,
+  res: Response,
+  // do not remove _next
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _next: NextFunction
+) => {
+  if (error instanceof Error) {
+    res.status(400).send({ error: error.message });
+    return;
+  } else {
+    res.status(400).send({ error: "Unknown error" });
+    return;
   }
 };

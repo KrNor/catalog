@@ -7,6 +7,10 @@ import {
   getTagByName,
 } from "../services/tagService";
 import { tagParser } from "../middleware/tagMiddleware";
+import {
+  authenticateToken,
+  authenticateAdmin,
+} from "../middleware/authMiddleware";
 
 const router = express.Router();
 
@@ -19,6 +23,13 @@ router.get("/:name", async (req, res) => {
   }
 });
 
+router.get("/", async (_req, res) => {
+  const products = await getAllTags();
+  res.json(products);
+});
+
+router.use(authenticateToken, authenticateAdmin);
+
 router.post("/", tagParser, async (req, res, next) => {
   try {
     const newProduct = await createTag(req.body);
@@ -26,11 +37,6 @@ router.post("/", tagParser, async (req, res, next) => {
   } catch (error: unknown) {
     next(error);
   }
-});
-
-router.get("/", async (_req, res) => {
-  const products = await getAllTags();
-  res.json(products);
 });
 
 router.delete("/", tagParser, async (req, res) => {

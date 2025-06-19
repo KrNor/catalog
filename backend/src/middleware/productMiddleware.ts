@@ -53,7 +53,7 @@ export const parseQueryAdvanced = (
     filterToPass.category = category;
   }
 
-  console.log(filterToPass);
+  // console.log(filterToPass);
 
   req.productFilter = filterToPass;
   next();

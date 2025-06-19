@@ -13,12 +13,37 @@ import {
   categoryIdParser,
   parseQueryAdvanced,
 } from "../middleware/productMiddleware";
+import {
+  authenticateToken,
+  authenticateAdmin,
+} from "../middleware/authMiddleware";
 
 import { tagParser } from "../middleware/tagMiddleware";
 import { getCategoryById } from "../services/categoryService";
 import { RequestWithFilter } from "../types";
 
 const router = express.Router();
+
+router.get("/:id", productIdParser, async (req, res) => {
+  const gottenProduct = await getProductById(req.params.id);
+  if (!gottenProduct) {
+    res.status(400).json({ error: "product with provided id was not found" });
+  } else {
+    res.json(gottenProduct);
+  }
+});
+
+router.get("/", parseQueryAdvanced, async (req: RequestWithFilter, res) => {
+  if (!(req.productFilter === undefined)) {
+    const products = await getFilteredSimplifiedProducts(req.productFilter);
+    res.json(products);
+  } else {
+    const products = await getFilteredSimplifiedProducts({});
+    res.json(products);
+  }
+});
+
+router.use(authenticateToken, authenticateAdmin);
 
 router.post("/:id/tag", productIdParser, tagParser, async (req, res) => {
   const objAfterAddedTag = await addTagToProduct(req.params.id, req.body);
@@ -60,25 +85,6 @@ router.post(
     }
   }
 );
-
-router.get("/:id", productIdParser, async (req, res) => {
-  const gottenProduct = await getProductById(req.params.id);
-  if (!gottenProduct) {
-    res.status(400).json({ error: "product with provided id was not found" });
-  } else {
-    res.json(gottenProduct);
-  }
-});
-
-router.get("/", parseQueryAdvanced, async (req: RequestWithFilter, res) => {
-  if (!(req.productFilter === undefined)) {
-    const products = await getFilteredSimplifiedProducts(req.productFilter);
-    res.json(products);
-  } else {
-    const products = await getFilteredSimplifiedProducts({});
-    res.json(products);
-  }
-});
 
 router.delete("/:id", productIdParser, async (req, res) => {
   const deletedProduct = await deleteProduct(req.params.id);

@@ -3,7 +3,12 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User, { UserDocument } from "../models/user";
 import { zodUserLogin } from "../types";
-import { JWT_SECRET, COOKIE_NAME, cookieOptions } from "../config/auth";
+import {
+  JWT_SECRET,
+  COOKIE_NAME,
+  cookieOptions,
+  isLoggedInCookieOptions,
+} from "../config/auth";
 import {
   AuthenticatedRequest,
   authenticateToken,
@@ -16,7 +21,7 @@ router.post("/login", async (req, res, next) => {
     const validationResult = zodUserLogin.safeParse(req.body);
 
     if (!validationResult.success) {
-      res.status(400).json({ error: validationResult.error.flatten() });
+      res.status(400).json({ error: "badly formated login request" });
       return;
     }
     const { username, password } = validationResult.data;
@@ -41,19 +46,23 @@ router.post("/login", async (req, res, next) => {
     const payload = {
       id: user.id,
       username: user.username,
+      role: user.role,
     };
     const token = jwt.sign(payload, JWT_SECRET, {
       expiresIn: "7d",
     });
 
+    // isLoggedIn cookie for knowing if user is logged in
+
     res
       .cookie(COOKIE_NAME, token, cookieOptions)
+      .cookie("isLoggedIn", true, isLoggedInCookieOptions)
       .status(200)
       .json({
-        message: "Login successful",
         user: {
           id: user.id,
           username: user.username,
+          role: user.role,
         },
       });
   } catch (error: unknown) {
@@ -62,14 +71,20 @@ router.post("/login", async (req, res, next) => {
 });
 router.post("/logout", async (_req, res, next) => {
   try {
-    res.clearCookie(COOKIE_NAME, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-    });
+    res
+      .clearCookie(COOKIE_NAME, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
+      })
+      .clearCookie("isLoggedIn", {
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
+      });
 
-    res.status(200).json({ message: "Logout successful" });
+    res.status(200).json({ error: "Logout successful" });
   } catch (error: unknown) {
     next(error);
   }
@@ -93,7 +108,13 @@ router.get(
         return;
       }
 
-      res.status(200).json({ user });
+      const userObject = {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+      };
+
+      res.status(200).json({ userObject });
     } catch (error: unknown) {
       next(error);
     }

@@ -7,11 +7,15 @@ import mongoose from "mongoose";
 
 const app = express();
 
-app.use(cors());
+// origin: process.env.FRONTEND_URL || "http://localhost:5173", // for security so that only the frontend can make the requests
 app.use(
   cors({
-    // origin: process.env.FRONTEND_URL || "http://localhost:3000", // for security so that only the frontend can make the requests
     credentials: true,
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      process.env.FRONTEND_URL as string,
+    ],
   })
 );
 app.use(express.json());
@@ -60,10 +64,22 @@ app.get("/", (_req, res) => {
   console.log("someone pinged here");
   res.send("pong");
 });
+
+app.get("/{*splat}", (_req, res) => {
+  res.status(400).json({ error: "Bad request" });
+});
+app.delete("/{*splat}", (_req, res) => {
+  res.status(400).json({ error: "Bad request" });
+});
+app.post("/{*splat}", (_req, res) => {
+  res.status(400).json({ error: "Bad request" });
+});
+
 app.use(jwtErrorMiddleware);
 app.use(zodErrorMiddleware);
 app.use(mongooseErrorMiddleware);
 app.use(genericErrorMiddleware);
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

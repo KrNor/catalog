@@ -12,6 +12,11 @@ import {
   categoryIdParser,
 } from "../middleware/categoryMiddleware";
 
+import {
+  authenticateToken,
+  authenticateAdmin,
+} from "../middleware/authMiddleware";
+
 const router = express.Router();
 
 router.get("/:id/products", categoryIdParser, async (req, res) => {
@@ -36,6 +41,8 @@ router.get("/", async (_req, res) => {
   const category = await getAllCategories();
   res.json(category);
 });
+
+router.use(authenticateToken, authenticateAdmin);
 
 router.post("/", newCategoryParser, async (req, res, next) => {
   try {

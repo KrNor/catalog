@@ -2,14 +2,11 @@ import Product, { ProductDocument } from "../models/product";
 import { getCategoryById, getCategoryListUnique } from "./categoryService";
 import { createTag } from "./tagService";
 import { ProductType, TagInsideProduct } from "../types";
-// import { FilterQuery } from "mongoose";
+import { FilterQuery } from "mongoose";
 
 export const createProduct = async (
   object: ProductType
 ): Promise<ProductDocument> => {
-  // const productToSave = {
-  //   ...object,
-  // };
   if (object.category) {
     const wantedCategory = await getCategoryById(object.category);
     if (!wantedCategory) {
@@ -40,10 +37,7 @@ export const createProduct = async (
 };
 
 export const getAllProducts = async (): Promise<ProductDocument[]> => {
-  const allProducts: ProductDocument[] = await Product.find(
-    {},
-    "name price avaliability identifier descriptionShort descriptionLong category tags id "
-  );
+  const allProducts: ProductDocument[] = await Product.find({});
   return allProducts;
 };
 
@@ -58,10 +52,8 @@ export const getAllSimplifiedProducts = async (): Promise<
 };
 
 export const getFilteredSimplifiedProducts = async (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  filter: any
+  filter: FilterQuery<ProductDocument>
 ): Promise<ProductDocument[]> => {
-  // console.log(filter);
   if (filter && "category" in filter) {
     const listOfCategories = await getCategoryListUnique(filter.category);
     const filteredProducts = await Product.find(
@@ -73,7 +65,6 @@ export const getFilteredSimplifiedProducts = async (
     );
     return filteredProducts;
   } else {
-    // console.log(filter);
     const filteredProducts = await Product.find(
       filter,
       "name price avaliability descriptionShort category id "

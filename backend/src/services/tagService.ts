@@ -8,8 +8,6 @@ export const createTag = async (
   const tagToDoThings = await Tag.findOne<TagDocument>({
     tagName: object.tagName,
   }).exec();
-  // await Tag.findOne({ tagName: nameOfTag }).exec();
-  console.log(tagToDoThings);
 
   if (tagToDoThings) {
     if (
@@ -50,14 +48,7 @@ export const getTagByName = async (
     return wantedTag;
   }
   return wantedTag;
-  // console.log(wantedTag);
 };
-
-// export const getTagById = async (idOfTag: string) => {
-//   const wantedTag = await Tag.findById(idOfTag).exec();
-//   // console.log(wantedTag);
-//   return wantedTag;
-// };
 
 export const deleteTag = async (
   object: TagInsideProduct

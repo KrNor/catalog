@@ -4,6 +4,13 @@ const router = express.Router();
 
 import { createUser, getAllUsers } from "../services/userService";
 
+import {
+  authenticateToken,
+  authenticateAdmin,
+} from "../middleware/authMiddleware";
+
+router.use(authenticateToken, authenticateAdmin);
+
 router.post("/", async (request, response) => {
   const { username, password } = request.body;
   const gottenUser = await createUser(username, password);

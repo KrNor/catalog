@@ -1,8 +1,10 @@
 import { InputGroup, Form, Button, Navbar } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { setFilteredProducts } from "../reducers/productReducer";
 import { setQuery } from "../reducers/searchQueryReducer";
+import { logoutUserThunk } from "../reducers/userReducer";
+import type { RootState } from "../types";
 
 const SearchBurron = () => {
   const dispatch = useDispatch();
@@ -11,8 +13,6 @@ const SearchBurron = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const navBarSearch = (formData: any) => {
     const query = formData.get("searchThing");
-
-    // console.log("query inside search button: " + query);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dispatch<any>(setQuery(query));
@@ -44,8 +44,23 @@ const SearchBurron = () => {
 };
 
 const NavigationBar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const padding = {
     padding: 5,
+  };
+
+  const userData = useSelector((state: RootState) => {
+    return state.user;
+  });
+
+  const LogOut = () => {
+    setTimeout(async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await dispatch<any>(logoutUserThunk());
+    }, 100);
+
+    navigate("/");
   };
 
   return (
@@ -56,6 +71,19 @@ const NavigationBar = () => {
       <Link style={padding} to="/products">
         products
       </Link>
+
+      {userData.username.length > 2 ? (
+        <div>
+          <div>hello {userData.username}</div>
+          <Link style={padding} to="/panel">
+            admin panel
+          </Link>
+          <Button onClick={LogOut}>Logout</Button>
+        </div>
+      ) : (
+        <div></div>
+      )}
+
       <SearchBurron />
     </Navbar>
   );

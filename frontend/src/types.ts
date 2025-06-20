@@ -33,3 +33,9 @@ export interface TagToSave {
   tagName: string;
   tagAttribute: string;
 }
+
+export interface UserObject {
+  username: string;
+  id: string;
+  role: "admin" | "user" | "";
+}

@@ -102,19 +102,19 @@ router.get(
         return;
       }
 
-      const user = await User.findById(userId);
-      if (!user) {
+      const foundUser = await User.findById(userId);
+      if (!foundUser) {
         res.status(404).json({ error: "User not found" });
         return;
       }
 
-      const userObject = {
-        id: user.id,
-        username: user.username,
-        role: user.role,
+      const user = {
+        id: foundUser.id,
+        username: foundUser.username,
+        role: foundUser.role,
       };
 
-      res.status(200).json({ userObject });
+      res.status(200).json({ user });
     } catch (error: unknown) {
       next(error);
     }

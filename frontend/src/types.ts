@@ -35,7 +35,13 @@ export interface TagToSave {
 }
 
 export interface UserObject {
+  user: {
+    username: string;
+    id: string;
+    role: "admin" | "user" | "";
+  };
+}
+export interface LoginDetails {
   username: string;
-  id: string;
-  role: "admin" | "user" | "";
+  password: string;
 }

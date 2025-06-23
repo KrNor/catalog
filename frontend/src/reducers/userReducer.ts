@@ -1,12 +1,17 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import UserService from "../services/users";
 
-import type { UserObject } from "../types";
+// import type { UserObject } from "../types";
+interface StopErrorsUser {
+  username: string;
+  id: string;
+  role: "admin" | "user" | "";
+}
 const productsSlice = createSlice({
   name: "user",
-  initialState: { username: "", id: "", role: "" } as UserObject,
+  initialState: { username: "", id: "", role: "" } as StopErrorsUser,
   reducers: {
-    setUser: (state, action: PayloadAction<UserObject>) => {
+    setUser: (state, action: PayloadAction<StopErrorsUser>) => {
       state.id = action.payload.id;
       state.username = action.payload.username;
       state.role = action.payload.role;
@@ -30,7 +35,7 @@ export const loginUserThunk = (username: string, password: string) => {
       await dispatch(emptyUser());
     } else {
       //   console.log(getState().user);
-      await dispatch(setUser({ ...responseToLogin }));
+      await dispatch(setUser({ ...responseToLogin.user }));
       //   console.log(getState().user);
     }
   };

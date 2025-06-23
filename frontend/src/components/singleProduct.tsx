@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Container,
@@ -12,29 +11,26 @@ import {
   Nav,
 } from "react-bootstrap";
 
-import { getProduct } from "../reducers/currentProductReducer";
-import type { RootState } from "../types";
+import { useGetFullProductQuery } from "../reducers/apiReducer";
 
 const SingleProductDetailed = () => {
   const [key, setKey] = useState<string>("inactive");
-  const dispatch = useDispatch();
   const { id } = useParams();
-  console.log(id);
+  let productId = "";
+  if (!(id === undefined)) {
+    productId = id;
+  }
+  const { data, error, isLoading } = useGetFullProductQuery(productId);
 
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dispatch<any>(getProduct(id as string));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  const product = useSelector((state: RootState) => {
-    return state.currentProduct.product;
-  });
+  if (error) {
+    return <div>error occured when getting product, try again later.</div>;
+  }
 
-  if (product === undefined) {
-    return <div>product not found</div>;
-  } else {
-    console.log(product.tags);
+  if (data) {
     return (
       <Container className="py-4">
         <Row className="align-items-center">
@@ -50,14 +46,14 @@ const SingleProductDetailed = () => {
           <Col xs={12} md={5}>
             <Card>
               <Card.Body>
-                <Card.Title>{product.name}</Card.Title>
-                <Card.Text>{product.descriptionShort}</Card.Text>
-                <Card.Text>{product.price}</Card.Text>
-                <Card.Text>{product.avaliability}</Card.Text>
-                <Card.Text>{product.identifier}</Card.Text>
-                <Card.Text>{product.descriptionShort}</Card.Text>
-                <Card.Text>{product.descriptionLong}</Card.Text>
-                <Card.Text>{product.id}</Card.Text>
+                <Card.Title>{data.name}</Card.Title>
+                <Card.Text>{data.descriptionShort}</Card.Text>
+                <Card.Text>{data.price}</Card.Text>
+                <Card.Text>{data.avaliability}</Card.Text>
+                <Card.Text>{data.identifier}</Card.Text>
+                <Card.Text>{data.descriptionShort}</Card.Text>
+                <Card.Text>{data.descriptionLong}</Card.Text>
+                <Card.Text>{data.id}</Card.Text>
               </Card.Body>
               <Tab.Container
                 id="tag-table-tag"
@@ -77,7 +73,7 @@ const SingleProductDetailed = () => {
                     <Tab.Pane eventKey="showing">
                       <Table>
                         <tbody>
-                          {product.tags.map((tag) => (
+                          {data.tags.map((tag) => (
                             <tr key={tag.tagName}>
                               <td>{tag.tagName}</td>
                               <td>{tag.tagAttribute}</td>

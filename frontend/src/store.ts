@@ -1,17 +1,14 @@
-import productReducer from "./reducers/productReducer";
-import currentProductReducer from "./reducers/currentProductReducer";
 import searchQueryReducer from "./reducers/searchQueryReducer";
-import userReducer from "./reducers/userReducer";
-
+import apiReducer, { api } from "./reducers/apiReducer";
 import { configureStore } from "@reduxjs/toolkit";
 
 const store = configureStore({
   reducer: {
-    products: productReducer,
-    currentProduct: currentProductReducer,
+    [api.reducerPath]: apiReducer,
     searchQuery: searchQueryReducer,
-    user: userReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(api.middleware),
 });
 
 export default store;

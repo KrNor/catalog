@@ -1,67 +1,71 @@
-import { InputGroup, Form, Button, Navbar } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
-import { setFilteredProducts } from "../reducers/productReducer";
-import { setQuery } from "../reducers/searchQueryReducer";
-import { logoutUserThunk } from "../reducers/userReducer";
-import type { RootState } from "../types";
+// import { InputGroup, Form, Button, Navbar } from "react-bootstrap";
+// import { useDispatch, useSelector } from "react-redux";
+// import { useNavigate, Link } from "react-router-dom";
 
-const SearchBurron = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+import { Navbar } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const navBarSearch = (formData: any) => {
-    const query = formData.get("searchThing");
+// import { setFilteredProducts } from "../reducers/productReducer";
+// import { setQuery } from "../reducers/searchQueryReducer";
+// import { logoutUserThunk } from "../reducers/userReducer";
+// import type { RootState } from "../types";
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dispatch<any>(setQuery(query));
+// const SearchBurron = () => {
+//   const dispatch = useDispatch();
+//   const navigate = useNavigate();
 
-    const searchQuer = { search: query };
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   const navBarSearch = (formData: any) => {
+//     const query = formData.get("searchThing");
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dispatch<any>(setFilteredProducts(searchQuer));
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//     dispatch<any>(setQuery(query));
 
-    navigate(`/products?search=${query}`);
-  };
+//     const searchQuer = { search: query };
 
-  return (
-    <Form action={navBarSearch}>
-      <InputGroup className="mb-3">
-        <Form.Control
-          name="searchThing"
-          type="input"
-          placeholder="Search"
-          aria-label="Recipient's username"
-          aria-describedby="basic-addon2"
-        />
-        <Button type="submit" variant="outline-secondary" id="button-addon2">
-          Search
-        </Button>
-      </InputGroup>
-    </Form>
-  );
-};
+//     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//     dispatch<any>(setFilteredProducts(searchQuer));
+
+//     navigate(`/products?search=${query}`);
+//   };
+
+//   return (
+//     <Form action={navBarSearch}>
+//       <InputGroup className="mb-3">
+//         <Form.Control
+//           name="searchThing"
+//           type="input"
+//           placeholder="Search"
+//           aria-label="Recipient's username"
+//           aria-describedby="basic-addon2"
+//         />
+//         <Button type="submit" variant="outline-secondary" id="button-addon2">
+//           Search
+//         </Button>
+//       </InputGroup>
+//     </Form>
+//   );
+// };
 
 const NavigationBar = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const dispatch = useDispatch();
+  // const navigate = useNavigate();
   const padding = {
     padding: 5,
   };
 
-  const userData = useSelector((state: RootState) => {
-    return state.user;
-  });
+  // const userData = useSelector((state: RootState) => {
+  //   return state.user;
+  // });
 
-  const LogOut = () => {
-    setTimeout(async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await dispatch<any>(logoutUserThunk());
-    }, 100);
+  // const LogOut = () => {
+  //   setTimeout(async () => {
+  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //     await dispatch<any>(logoutUserThunk());
+  //   }, 100);
 
-    navigate("/");
-  };
+  //   navigate("/");
+  // };
 
   return (
     <Navbar>
@@ -71,8 +75,11 @@ const NavigationBar = () => {
       <Link style={padding} to="/products">
         products
       </Link>
+      <Link style={padding} to="/login">
+        login pace
+      </Link>
 
-      {userData.username.length > 2 ? (
+      {/* {userData.username.length > 2 ? (
         <div>
           <div>hello {userData.username}</div>
           <Link style={padding} to="/panel">
@@ -82,9 +89,9 @@ const NavigationBar = () => {
         </div>
       ) : (
         <div></div>
-      )}
-
-      <SearchBurron />
+      )} */}
+      {/* 
+      <SearchBurron /> */}
     </Navbar>
   );
 };

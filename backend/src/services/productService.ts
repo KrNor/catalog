@@ -46,30 +46,94 @@ export const getAllSimplifiedProducts = async (): Promise<
 > => {
   const allProducts: ProductDocument[] = await Product.find(
     {},
-    "name price avaliability descriptionShort category id "
+    "name price availability descriptionShort category id"
   );
   return allProducts;
 };
 
+import { PageObject } from "../types";
+
+type SortObject = { [key: string]: 1 | -1 };
+
+const sortObjectReturner = (sortName: string): SortObject => {
+  switch (sortName) {
+    case "newest":
+      return { _id: -1 };
+    case "oldest":
+      return { _id: 1 };
+    case "priceAsc":
+      return { price: 1 };
+    case "priceDesc":
+      return { price: -1 };
+    case "nameAZ":
+      return { name: 1 };
+    case "nameZA":
+      return { name: -1 };
+    default:
+      return { _id: -1 };
+  }
+};
+
 export const getFilteredSimplifiedProducts = async (
-  filter: FilterQuery<ProductDocument>
+  filter: FilterQuery<ProductDocument>,
+  sortingType?: string,
+  pagingObject?: PageObject
 ): Promise<ProductDocument[]> => {
+  const optionsObj = pagingObject
+    ? {
+        skip: (pagingObject.currentPage - 1) * pagingObject.resultsPerPage,
+        limit: pagingObject.resultsPerPage,
+      }
+    : {};
+  // console.log(pagingObject);
+  // if (sortingType) {
+  //   console.log(sortObjectReturner(sortingType));
+  // }
   if (filter && "category" in filter) {
-    const listOfCategories = await getCategoryListUnique(filter.category);
-    const filteredProducts = await Product.find(
-      {
-        ...filter,
-        category: { $in: listOfCategories },
-      },
-      "name price avaliability descriptionShort category id "
-    );
-    return filteredProducts;
+    if (sortingType) {
+      const listOfCategories = await getCategoryListUnique(filter.category);
+      const filteredProducts = await Product.find(
+        {
+          ...filter,
+          category: { $in: listOfCategories },
+        },
+        "name price availability descriptionShort category id",
+        optionsObj
+      )
+        .sort(sortObjectReturner(sortingType))
+        .collation({ locale: "en", strength: 2 });
+
+      return filteredProducts;
+    } else {
+      const listOfCategories = await getCategoryListUnique(filter.category);
+      const filteredProducts = await Product.find(
+        {
+          ...filter,
+          category: { $in: listOfCategories },
+        },
+        "name price availability descriptionShort category id",
+        optionsObj
+      );
+      return filteredProducts;
+    }
   } else {
-    const filteredProducts = await Product.find(
-      filter,
-      "name price avaliability descriptionShort category id "
-    );
-    return filteredProducts;
+    if (sortingType) {
+      const filteredProducts = await Product.find(
+        filter,
+        "name price availability descriptionShort category id",
+        optionsObj
+      )
+        .sort(sortObjectReturner(sortingType))
+        .collation({ locale: "en", strength: 2 });
+      return filteredProducts;
+    } else {
+      const filteredProducts = await Product.find(
+        filter,
+        "name price availability descriptionShort category id",
+        optionsObj
+      );
+      return filteredProducts;
+    }
   }
 };
 
@@ -78,7 +142,7 @@ export const getProductById = async (
 ): Promise<ProductDocument | null> => {
   const wantedProduct = await Product.findById<ProductDocument>(
     idOfProduct,
-    "name price avaliability identifier descriptionShort descriptionLong category tags idname price avaliability id"
+    "name price availability identifier descriptionShort descriptionLong category tags id"
   ).exec();
   return wantedProduct;
 };

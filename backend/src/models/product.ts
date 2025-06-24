@@ -4,7 +4,7 @@ import { TagInsideProduct } from "../types";
 export interface MongooseProduct {
   name: string;
   price: number; // saved in cents
-  avaliability: number;
+  availability: number;
   identifier: string;
   descriptionShort: string;
   descriptionLong: string;
@@ -25,7 +25,7 @@ const schema = new mongoose.Schema<ProductDocument>(
       minLength: 3,
     },
     price: { type: Number, required: true, trim: true }, // saved in cents
-    avaliability: { type: Number, required: true, min: -4, trim: true },
+    availability: { type: Number, required: true, min: -4, trim: true },
     identifier: { type: String, required: true, trim: true },
     descriptionShort: {
       type: String,

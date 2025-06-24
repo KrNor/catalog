@@ -34,8 +34,16 @@ router.get("/:id", productIdParser, async (req, res) => {
 });
 
 router.get("/", parseQueryAdvanced, async (req: RequestWithFilter, res) => {
-  if (!(req.productFilter === undefined)) {
-    const products = await getFilteredSimplifiedProducts(req.productFilter);
+  if (
+    req.productFilter !== undefined &&
+    req.sortingType !== undefined &&
+    req.pagingObject !== undefined
+  ) {
+    const products = await getFilteredSimplifiedProducts(
+      req.productFilter,
+      req.sortingType,
+      req.pagingObject
+    );
     res.json(products);
   } else {
     const products = await getFilteredSimplifiedProducts({});

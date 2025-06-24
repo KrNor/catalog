@@ -10,6 +10,11 @@ export const zodProductFilter = z.object({
   search: z.string().optional(),
   availability: z.coerce.number().optional(),
   category: z.string().optional(),
+  sortType: z
+    .enum(["", "newest", "oldest", "priceAsc", "priceDesc", "nameAZ", "nameZA"])
+    .optional(),
+  resultsPerPage: z.coerce.number().min(20).max(180).default(60).optional(),
+  currentPage: z.coerce.number().min(1).default(1).optional(),
 });
 
 export type ProductFilter = z.infer<typeof zodProductFilter>;
@@ -39,7 +44,7 @@ export const zodCategory = z.object({
 export const zodProduct = z.object({
   name: z.string().min(3),
   price: z.number().nonnegative(),
-  avaliability: z.number().gte(-4),
+  availability: z.number().gte(-4),
   identifier: z.string(),
   descriptionShort: z.string().min(3),
   descriptionLong: z.string().min(3),
@@ -85,7 +90,7 @@ export type CategoryWithId = z.infer<typeof zodCategoryWithId>;
 export interface SimplifiedProduct {
   name: string;
   price: number; // saved in cents
-  avaliability: number;
+  availability: number;
   descriptionShort: string;
   category: string;
   id: string;
@@ -98,6 +103,13 @@ export const zodUserLogin = z.object({
 
 export type UserLoginRequest = z.infer<typeof zodUserLogin>;
 
+export interface PageObject {
+  currentPage: number;
+  resultsPerPage: number;
+}
+
 export interface RequestWithFilter extends Request {
   productFilter?: FilterQuery<ProductDocument>;
+  sortingType?: string;
+  pagingObject?: PageObject;
 }

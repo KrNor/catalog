@@ -63,6 +63,12 @@ const newCategories3 = (parent: any, grandParent: any) => {
       parent: parent._id,
       lineage: [grandParent._id, parent._id],
     },
+    {
+      name: "Interior cleaning bushes",
+      description: "bushes to clean interior with",
+      parent: parent._id,
+      lineage: [grandParent._id, parent._id],
+    },
   ];
 };
 
@@ -72,7 +78,7 @@ const newProducts = (clothCategory: any, carpaintCategory: any) => {
     {
       name: "Mazda ds401 cloth",
       price: 50000,
-      avaliability: 5,
+      availability: 5,
       identifier: "dhniofcg7474",
       descriptionShort: "Best cloth for Mazda cars",
       descriptionLong:
@@ -87,10 +93,44 @@ const newProducts = (clothCategory: any, carpaintCategory: any) => {
       ],
     },
     {
+      name: "Car Paint Carbon fiber",
+      price: 9000,
+      availability: 20,
+      identifier: "hfthj472318t",
+      descriptionShort: "Car paint for paint cars",
+      descriptionLong:
+        "Car paint for paint cars, Car paint for paint cars, Car paint for paint cars, Car paint for paint cars, sasd",
+      category: carpaintCategory._id,
+      tags: [
+        { tagName: "Origin country", tagAttribute: "Canada" },
+        {
+          tagName: "Maker",
+          tagAttribute: "Suzuki",
+        },
+      ],
+    },
+    {
       name: "Car Paint red",
       price: 2400,
-      avaliability: 1,
+      availability: 1,
       identifier: "hfthj4tf18t",
+      descriptionShort: "Car paint for paint cars",
+      descriptionLong:
+        "Car paint for paint cars, Car paint for paint cars, Car paint for paint cars, Car paint for paint cars, sasd",
+      category: carpaintCategory._id,
+      tags: [
+        { tagName: "Origin country", tagAttribute: "Canada" },
+        {
+          tagName: "Maker",
+          tagAttribute: "Suzuki",
+        },
+      ],
+    },
+    {
+      name: "Car Paint brown",
+      price: 2400,
+      availability: -2,
+      identifier: "hfthj4tfp8t",
       descriptionShort: "Car paint for paint cars",
       descriptionLong:
         "Car paint for paint cars, Car paint for paint cars, Car paint for paint cars, Car paint for paint cars, sasd",
@@ -106,7 +146,7 @@ const newProducts = (clothCategory: any, carpaintCategory: any) => {
     {
       name: "Car Paint blue",
       price: 2400,
-      avaliability: 0,
+      availability: 0,
       identifier: "hfthj4tf17t",
       descriptionShort: "Car paint for paint cars",
       descriptionLong:

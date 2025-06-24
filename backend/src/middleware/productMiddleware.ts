@@ -30,8 +30,16 @@ export const parseQueryAdvanced = (
     return;
   }
 
-  const { minPrice, maxPrice, search, availability, category } =
-    parseResult.data;
+  const {
+    minPrice,
+    maxPrice,
+    search,
+    availability,
+    category,
+    sortType,
+    currentPage,
+    resultsPerPage,
+  } = parseResult.data;
 
   const filterToPass: FilterQuery<ProductDocument> = {};
 
@@ -46,16 +54,60 @@ export const parseQueryAdvanced = (
   }
 
   if (availability) {
-    filterToPass.availability.$gte = availability;
+    if (availability === 1) {
+      filterToPass.availability = { $gte: 1 };
+    }
   }
 
   if (category) {
     filterToPass.category = category;
   }
 
-  // console.log(filterToPass);
-
   req.productFilter = filterToPass;
+
+  // sorting
+
+  let sortingTypeResult = "";
+  if (sortType) {
+    if (
+      [
+        "newest",
+        "oldest",
+        "priceAsc",
+        "priceDesc",
+        "nameAZ",
+        "nameZA",
+      ].includes(sortType)
+    ) {
+      sortingTypeResult = sortType;
+    } else {
+      sortingTypeResult = "newest"; // default sort
+    }
+  }
+
+  req.sortingType = sortingTypeResult;
+
+  // paging
+
+  let currentPageResult = undefined,
+    resultsPerPageResult = undefined;
+
+  if (currentPage && resultsPerPage) {
+    currentPageResult = currentPage;
+    resultsPerPageResult = resultsPerPage;
+  }
+
+  if (currentPageResult && resultsPerPageResult) {
+    req.pagingObject = {
+      currentPage: currentPageResult,
+      resultsPerPage: resultsPerPageResult,
+    };
+  } else {
+    req.pagingObject = {
+      currentPage: 1,
+      resultsPerPage: 60,
+    };
+  }
   next();
 };
 

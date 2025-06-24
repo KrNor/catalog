@@ -1,5 +1,5 @@
 import { Container, Row, Card, Col } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGetAllProductsQuery } from "../reducers/apiReducer";
 
 import SearchFilters from "./searchFilters";
@@ -22,7 +22,10 @@ const SingleProduct = (props: any) => {
 };
 
 const Products = () => {
-  const { data, error, isLoading } = useGetAllProductsQuery();
+  const [searchParams] = useSearchParams();
+  const queryString = searchParams.toString();
+
+  const { data, error, isLoading } = useGetAllProductsQuery(queryString);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -62,63 +65,6 @@ const Products = () => {
       </Container>
     );
   }
-
-  // const allowedKeys: (keyof QueryObject)[] = [
-  //   "minPrice",
-  //   "maxPrice",
-  //   "search",
-  //   "avaliability",
-  //   "category",
-  // ];
-
-  // const queryThing = allowedKeys.reduce((acc, key) => {
-  //   const value = searchParams.get(key);
-  //   if (value !== null) {
-  //     acc[key] = value;
-  //   }
-  //   return acc;
-  // }, {} as QueryObject);
-
-  // console.log("this query thing: " + JSON.stringify(queryThing))
 };
-
-// const Products = () => {
-//   const [searchParams] = useSearchParams();
-
-//   const allowedKeys: (keyof QueryObject)[] = [
-//     "minPrice",
-//     "maxPrice",
-//     "search",
-//     "avaliability",
-//     "category",
-//   ];
-
-//   const queryThing = allowedKeys.reduce((acc, key) => {
-//     const value = searchParams.get(key);
-//     if (value !== null) {
-//       acc[key] = value;
-//     }
-//     return acc;
-//   }, {} as QueryObject);
-
-//   // console.log("this query thing: " + JSON.stringify(queryThing));
-
-//   return (
-//     <Container>
-//       <Row>
-//         <Col sm={2}>
-//           <SearchFilters />
-//         </Col>
-//         <Col sm={10}>
-//           {_.isEmpty(queryThing) ? (
-//             <ProductsFirstLoad />
-//           ) : (
-//             <ProductsNotFirstLoad currQuer={queryThing} />
-//           )}
-//         </Col>
-//       </Row>
-//     </Container>
-//   );
-// };
 
 export default Products;

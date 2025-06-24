@@ -5,7 +5,6 @@ import type {
   UserObject,
   LoginDetails,
 } from "../types";
-// import type { BaseQueryFn } from "@reduxjs/toolkit/query";
 
 export const api = createApi({
   reducerPath: "api",
@@ -15,8 +14,8 @@ export const api = createApi({
   }),
   tagTypes: ["Product", "User"],
   endpoints: (build) => ({
-    getAllProducts: build.query<SimplifiedProduct[], void>({
-      query: () => ({ url: "product" }),
+    getAllProducts: build.query<SimplifiedProduct[], string>({
+      query: (queryString) => ({ url: `product?${queryString}` }),
       providesTags: (result) =>
         result
           ? [

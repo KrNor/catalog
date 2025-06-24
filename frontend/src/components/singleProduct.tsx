@@ -49,7 +49,7 @@ const SingleProductDetailed = () => {
                 <Card.Title>{data.name}</Card.Title>
                 <Card.Text>{data.descriptionShort}</Card.Text>
                 <Card.Text>{data.price}</Card.Text>
-                <Card.Text>{data.avaliability}</Card.Text>
+                <Card.Text>{data.availability}</Card.Text>
                 <Card.Text>{data.identifier}</Card.Text>
                 <Card.Text>{data.descriptionShort}</Card.Text>
                 <Card.Text>{data.descriptionLong}</Card.Text>

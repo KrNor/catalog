@@ -1,92 +1,100 @@
 import { Form, InputGroup, Button, Col, Row } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { setFilteredProducts } from "../reducers/productReducer";
-
-const allowedFields = [
-  "minPrice",
-  "maxPrice",
-  "search",
-  "avaliability",
-  "category",
-];
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { searchSchema, type SearchSchema } from "../validation";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const SearchFilters = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const validSortTypes = [
+    "",
+    "newest",
+    "oldest",
+    "priceAsc",
+    "priceDesc",
+    "nameAZ",
+    "nameZA",
+  ] as const;
+
+  const sortTypeFromParams = params.get("sortType");
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const searchBarSearch = (formData: any) => {
-    const queryOfSearch: Record<string, string> = {};
-    const helperArray = [];
-    console.log(formData.entries());
+  const sortType = validSortTypes.includes(sortTypeFromParams as any)
+    ? (sortTypeFromParams as (typeof validSortTypes)[number])
+    : "";
 
-    // too much ifs
-    for (const pair of formData.entries()) {
-      if (allowedFields.includes(pair[0]) && !(pair[1] === "")) {
-        console.log(typeof pair[1]);
-        if (typeof pair[0] === "string" && typeof pair[1] === "string") {
-          if (pair[0] === "avaliability") {
-            queryOfSearch[pair[0]] = "1";
-            helperArray.push([pair[0], "1"]);
-          } else {
-            queryOfSearch[pair[0]] = pair[1];
-            helperArray.push([pair[0], pair[1]]);
-          }
-        }
+  const { register, handleSubmit } = useForm<SearchSchema>({
+    resolver: zodResolver(searchSchema),
+    defaultValues: {
+      minPrice: params.get("minPrice") ? Number(params.get("minPrice")) : "",
+      maxPrice: params.get("maxPrice") ? Number(params.get("maxPrice")) : "",
+      search: params.get("search") || "",
+      availability: params.get("availability")
+        ? Number(params.get("availability"))
+        : "",
+      category: params.get("category") || "",
+      sortType,
+      resultsPerPage: params.get("resultsPerPage")
+        ? Number(params.get("resultsPerPage"))
+        : 60,
+      currentPage: params.get("currentPage")
+        ? Number(params.get("currentPage"))
+        : 1,
+    },
+  });
+
+  const onSubmit = (data: SearchSchema) => {
+    const query = new URLSearchParams();
+
+    Object.entries(data).forEach(([key, value]) => {
+      // if (key === "availability") {
+      //   console.log(typeof value);
+      //   console.log(value);
+      // }
+      if (value) {
+        query.set(key, value as string);
       }
-    }
-
-    console.log("new search query: " + JSON.stringify(queryOfSearch));
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    dispatch<any>(setFilteredProducts(queryOfSearch));
-
-    let navigateString = ``;
-    helperArray.forEach((quer) => {
-      navigateString += `${quer[0]}=${quer[1]}&`;
     });
 
-    console.log(navigateString);
-    navigate(`/products?${navigateString}`);
+    navigate(`/products?${query.toString()}`);
   };
+
   return (
-    <Form action={searchBarSearch}>
-      <Form.Group className="mb-3" controlId="formGroupEmail">
-        <Form.Label>Search:</Form.Label>
-        <InputGroup className="mb-3">
-          <Form.Control
-            name="search"
-            type="input"
-            placeholder="Search"
-            aria-label="Recipient's username"
-            aria-describedby="basic-addon2"
-          />
-          <Button type="submit" variant="outline-secondary" id="button-addon2">
-            Search
-          </Button>
-        </InputGroup>
-        <Form.Label>Avaliability</Form.Label>
-        <Form.Check
-          type="switch"
-          name="avaliability"
-          label="show only currently avaliable"
-        />
-        <Form.Label>Price</Form.Label>
-        <InputGroup className="mb-3">
-          <Row>
-            <Col className="f1 relative">
-              <Form.Control name="minPrice" type="text" placeholder="Min" />
-            </Col>
-            <Col className="f1 relative">
-              <Form.Control name="maxPrice" type="text" placeholder="Max" />
-            </Col>
-          </Row>
-        </InputGroup>
-        <Button type="submit" variant="outline-secondary" id="button-addon2">
-          Search
-        </Button>
-      </Form.Group>
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form.Label>Search:</Form.Label>
+      <Form.Control placeholder="search name" {...register("search")} />
+      <Form.Label>Price</Form.Label>
+      <InputGroup>
+        <Row>
+          <Col className="f1 relative">
+            <Form.Control
+              type="number"
+              placeholder="Min Price"
+              {...register("minPrice")}
+            />
+          </Col>
+          <Col className="f1 relative">
+            <Form.Control
+              type="number"
+              placeholder="Max Price"
+              {...register("maxPrice")}
+            />
+          </Col>
+        </Row>
+      </InputGroup>
+      <Form.Label>Include only currently availiable</Form.Label>
+      <Form.Check type="switch" {...register("availability")} />
+      <Form.Select {...register("sortType")}>
+        <option value="">Sort by:</option>
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="priceAsc">Increasing Price </option>
+        <option value="priceDesc">Decreasing Price</option>
+        <option value="nameAZ">A to Z</option>
+        <option value="nameZA">Z to A</option>
+      </Form.Select>
+      <Button type="submit">Search</Button>
     </Form>
   );
 };

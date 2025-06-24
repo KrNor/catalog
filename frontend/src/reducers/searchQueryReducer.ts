@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-const productsSlice = createSlice({
-  name: "searchQuery",
+
+const searchFilterSlice = createSlice({
+  name: "searchFilter",
   initialState: "",
   reducers: {
     setSearchQuery: (state, action: PayloadAction<string>) => {
@@ -13,7 +14,7 @@ const productsSlice = createSlice({
     },
   },
 });
-export const { setSearchQuery, getSearchQuery } = productsSlice.actions;
+export const { setSearchQuery, getSearchQuery } = searchFilterSlice.actions;
 
 export const getQuery = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,9 +28,8 @@ export const setQuery = (quer: string) => {
   console.log(quer);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (dispatch: any) => {
-    // const product = await productService.getProduct(id);
     await dispatch(setSearchQuery(quer));
   };
 };
 
-export default productsSlice.reducer;
+export default searchFilterSlice.reducer;

@@ -11,7 +11,7 @@ export interface QueryObject {
   minPrice?: string;
   maxPrice?: string;
   search?: string;
-  avaliability?: string;
+  availability?: string;
   category?: string;
 }
 
@@ -23,7 +23,7 @@ export interface Product extends SimplifiedProduct {
 export interface SimplifiedProduct {
   name: string;
   price: number; // saved in cents
-  avaliability: number;
+  availability: number;
   descriptionShort: string;
   category: string;
   id: string;
@@ -44,4 +44,22 @@ export interface UserObject {
 export interface LoginDetails {
   username: string;
   password: string;
+}
+
+export interface SearchFilterObject {
+  minPrice?: string;
+  maxPrice?: string;
+  search?: string;
+  availability?: string;
+  tags: { [key: string]: unknown };
+  category?: string;
+  sortType?:
+    | "priceLow"
+    | "priceHigh"
+    | "nameAz"
+    | "nameZa"
+    | "oldest"
+    | "newest";
+  resultsPerPage?: number;
+  currentPage?: number;
 }

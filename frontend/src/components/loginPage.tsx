@@ -1,8 +1,6 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useDispatch } from "react-redux";
-// import { useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
 import { AuthHook } from "../hooks";
 import { api } from "../reducers/apiReducer";
 import type { LoginDetails } from "../types";

@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SingleProductDetailed from "./components/singleProduct";
 import Products from "./components/products";
 import NavigationBar from "./components/navigationBar";
+import AdminPanel from "./components/adminPanel";
+import ProtectedRoute from "./components/protectedRoute";
 
 import Login from "./components/loginPage";
 
@@ -15,7 +17,7 @@ const Home = () => (
 );
 
 const App = () => {
-  const { user, isLoading, error } = AuthHook();
+  const { isLoading, error } = AuthHook(); //user,
 
   if (isLoading) {
     return <div>loading ...</div>;
@@ -28,26 +30,20 @@ const App = () => {
   return (
     <Container>
       <Router>
-        {!isLoading && user ? (
-          <div>hello {user.user.username}!</div>
-        ) : (
-          <div>not logged in</div>
-        )}
         <NavigationBar />
         <Routes>
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<SingleProductDetailed />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />
-          {/* <Route
+          <Route
             path="/panel"
             element={
               <ProtectedRoute>
                 <AdminPanel />
               </ProtectedRoute>
             }
-          /> */}
-          {/* <Route path="/panel" element={} /> */}
+          />
         </Routes>
         <div>
           <p>this is app</p>

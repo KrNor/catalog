@@ -113,3 +113,5 @@ export interface RequestWithFilter extends Request {
   sortingType?: string;
   pagingObject?: PageObject;
 }
+
+export const UpdateCategoryZodSchema = z.string();

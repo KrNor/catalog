@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { zodCategory } from "../types";
+import { zodCategory, UpdateCategoryZodSchema } from "../types";
 import mongoose from "mongoose";
 
 export const newCategoryParser = (
@@ -10,6 +10,22 @@ export const newCategoryParser = (
   try {
     const returnedCategory = zodCategory.parse(req.body);
     req.body = returnedCategory;
+    next();
+  } catch (error: unknown) {
+    next(error);
+  }
+};
+
+export const updatingCategoryParser = (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
+  try {
+    const returnedCategory = UpdateCategoryZodSchema.parse(
+      req.body.description
+    );
+    req.body.description = returnedCategory;
     next();
   } catch (error: unknown) {
     next(error);

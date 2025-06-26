@@ -1,15 +1,31 @@
-import Category, { CategoryDocument } from "../models/category";
+import Category, { CategoryDocument } from "../models/category"; // MongooseCategory
 import Product, { ProductDocument } from "../models/product";
 import { CategoryType } from "../types";
 import { Types } from "mongoose";
-// import _ from "lodash";
+
+interface CategoryToReturn {
+  id: string;
+  name: string;
+}
+interface CategoryPastAndFuture {
+  lineage: CategoryToReturn[];
+  category: CategoryToReturn[];
+  imediateChildren: CategoryToReturn[];
+}
+
+interface CategoryPastAndFutureWithUnderscore {
+  lineage: CategoryToReturnWithUnderscore[];
+  imediateChildren: CategoryToReturnWithUnderscore[];
+}
+
+interface CategoryToReturnWithUnderscore {
+  _id: string;
+  name: string;
+}
 
 export const createCategory = async (
   object: CategoryType
 ): Promise<CategoryDocument> => {
-  // const categoryToSave: zodCategoryType = {
-  //   ...object,
-  // };
   if (object.parent) {
     const parentCategory = await getCategoryById(object.parent);
     if (
@@ -93,6 +109,7 @@ export const getProductsByCategory = async (
   return products;
 };
 
+// gives back a list of children all children categories from given id category
 export const getCategoryListUnique = async (
   idOfCategory: string
 ): Promise<string[]> => {
@@ -105,4 +122,84 @@ export const getCategoryListUnique = async (
 
   const listOfCategories = [...uniqueCategoryIds, idOfCategory];
   return listOfCategories;
+};
+
+export const getCategoryLineageImediateChildren = async (
+  idOfCategory: string
+): Promise<CategoryPastAndFuture> => {
+  const currentCategory: CategoryDocument | null = await getCategoryById(
+    idOfCategory
+  );
+  if (!currentCategory) {
+    throw new Error("sutch category does not exist");
+  }
+
+  const result = await Category.aggregate<CategoryPastAndFutureWithUnderscore>([
+    {
+      $facet: {
+        lineage: [
+          { $match: { _id: { $in: currentCategory.lineage } } },
+          { $project: { _id: 1, name: 1 } },
+        ],
+        imediateChildren: [
+          { $match: { parent: currentCategory._id } },
+          { $project: { _id: 1, name: 1 } },
+        ],
+      },
+    },
+  ]);
+
+  const removeUnderscore = (
+    categoryy: CategoryToReturnWithUnderscore[]
+  ): CategoryToReturn[] => {
+    const newArray: Array<CategoryToReturn> = [];
+    categoryy.forEach((val) => {
+      newArray.push({
+        id: val._id.toString(),
+        name: val.name,
+      });
+    });
+    return newArray;
+  };
+  const lineageToReturn = removeUnderscore(result[0].lineage);
+  const imediateChildrenToReturn = removeUnderscore(result[0].imediateChildren);
+
+  return {
+    lineage: lineageToReturn,
+    category: [{ id: currentCategory.id, name: currentCategory.name }],
+    imediateChildren: imediateChildrenToReturn,
+  };
+};
+
+export const getBaseCategories = async (): Promise<CategoryPastAndFuture> => {
+  const listOfCategories = await Category.find<CategoryToReturn>(
+    { parent: null },
+    "name id"
+  ).exec();
+
+  const BaseCategoriesObject: CategoryPastAndFuture = {
+    lineage: [],
+    category: [],
+    imediateChildren: [...listOfCategories],
+  };
+
+  return BaseCategoriesObject;
+};
+
+export const updateCategory = async (
+  idOfCategory: string,
+  newDescription: string
+): Promise<CategoryDocument> => {
+  const wantedCategory = await Category.findByIdAndUpdate(
+    idOfCategory,
+    {
+      description: newDescription,
+    },
+    { new: true }
+  );
+  if (!wantedCategory) {
+    throw new Error(`The category you want to update doesn't exist`);
+  }
+
+  return wantedCategory;
 };

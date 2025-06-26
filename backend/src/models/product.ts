@@ -1,5 +1,19 @@
-import mongoose, { Types, Document } from "mongoose";
+import mongoose, { Types, Document, Schema } from "mongoose";
 import { TagInsideProduct } from "../types";
+// import { MongooseImage } from "./image";
+
+interface MongooseImage {
+  url: string;
+  publicId: string;
+}
+
+const ImageSchema: Schema<MongooseImage> = new Schema(
+  {
+    url: { type: String, required: true },
+    publicId: { type: String, required: true },
+  },
+  { _id: false }
+);
 
 export interface MongooseProduct {
   name: string;
@@ -10,6 +24,8 @@ export interface MongooseProduct {
   descriptionLong: string;
   category: Types.ObjectId;
   tags: TagInsideProduct[];
+  mainImage: MongooseImage;
+  imageGallery: MongooseImage[];
 }
 
 export interface ProductDocument extends MongooseProduct, Document {}
@@ -46,6 +62,8 @@ const schema = new mongoose.Schema<ProductDocument>(
         _id: false,
       },
     ],
+    mainImage: { type: ImageSchema }, //{ type: ImageSchema, required: true }, not required for now, probably implement a default image differently than now
+    imageGallery: [ImageSchema],
   },
   { timestamps: true }
 );

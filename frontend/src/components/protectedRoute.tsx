@@ -1,17 +1,11 @@
-import React, { type ReactNode } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import type { FC } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import { AuthHook } from "../hooks";
 
-interface PrivateRouteProps {
-  children: ReactNode;
-}
-
-const ProtectedRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const navigate = useNavigate();
-  navigate("/login", { replace: true });
+const ProtectedRoute: FC = () => {
   const { user } = AuthHook();
   if (user && user.user.role === "admin") {
-    return children;
+    return <Outlet />;
   } else {
     return <Navigate to="/login" replace />;
   }

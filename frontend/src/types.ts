@@ -18,7 +18,7 @@ export interface QueryObject {
 export interface Product extends SimplifiedProduct {
   identifier: string;
   descriptionLong: string;
-  tags: [TagToSave];
+  tags: TagToSave[];
 }
 export interface SimplifiedProduct {
   name: string;
@@ -62,4 +62,22 @@ export interface SearchFilterObject {
     | "newest";
   resultsPerPage?: number;
   currentPage?: number;
+}
+
+export interface CategoryToReturn {
+  id: string;
+  name: string;
+}
+export interface CategoryFamilyObject {
+  lineage: CategoryToReturn[];
+  category: CategoryToReturn[];
+  imediateChildren: CategoryToReturn[];
+}
+
+export interface FullCategoryObject {
+  name: string;
+  description: string;
+  parent: string | null;
+  lineage: string[];
+  id: string;
 }

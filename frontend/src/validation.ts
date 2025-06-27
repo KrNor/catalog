@@ -6,10 +6,9 @@ export const searchSchema = z.object({
   search: z.string().optional(),
   availability: z.union([z.coerce.number().gte(-4), z.literal("")]).optional(),
   category: z.string().optional(),
-  sortType: z
-    .enum(["", "newest", "oldest", "priceAsc", "priceDesc", "nameAZ", "nameZA"])
-    .optional(),
+  sortType: z.string().optional(),
   resultsPerPage: z.coerce.number().max(180).default(60).optional(),
   currentPage: z.coerce.number().min(1).default(1).optional(),
 });
+
 export type SearchSchema = z.infer<typeof searchSchema>;

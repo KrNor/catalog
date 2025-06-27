@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Card, Form, Spinner, Alert, Row, Col } from "react-bootstrap";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 import {
   useGetAllCategoriesQuery,
   useDeleteCategoryMutation,
   useEditCategoryMutation,
 } from "../../reducers/apiReducer";
-
 import type { FullCategoryObject } from "../../types";
 
-const CategoryManager: React.FC = () => {
+const CategoryManager = () => {
   const { data: categories, isLoading, isError } = useGetAllCategoriesQuery();
   const [editCategory, { isLoading: isEditing }] = useEditCategoryMutation();
   const [deleteCategory, { isLoading: isDeleting }] =
@@ -33,7 +33,6 @@ const CategoryManager: React.FC = () => {
 
   const handleSaveEdit = async (id: string) => {
     try {
-      console.log(id);
       await editCategory({
         id,
         description: editedDescription,
@@ -41,26 +40,39 @@ const CategoryManager: React.FC = () => {
       setEditingId(null);
       setEditedDescription("");
       setErrorMessage(null);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to save product:", err);
-      const message =
-        err.data.error || "An unknown error occurred while saving.";
-      setErrorMessage(message);
+      const fetchErr = err as FetchBaseQueryError;
+      if (
+        fetchErr.data &&
+        typeof fetchErr.data === "object" &&
+        "error" in fetchErr.data
+      ) {
+        setErrorMessage(fetchErr.data.error as string);
+      } else {
+        setErrorMessage("An unknown error occurred while saving.");
+      }
     }
   };
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this category?")) {
       try {
-        console.log(id);
         await deleteCategory(id).unwrap();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Failed to delete category:", err);
-        const message =
-          err?.data?.error || "An unknown error occurred while saving.";
-        setErrorMessage(message);
+        const fetchErr = err as FetchBaseQueryError;
+        if (
+          fetchErr.data &&
+          typeof fetchErr.data === "object" &&
+          "error" in fetchErr.data
+        ) {
+          setErrorMessage(fetchErr.data.error as string);
+        } else {
+          setErrorMessage(
+            "An unknown error occurred while trying to delete a category."
+          );
+        }
       }
     }
   };

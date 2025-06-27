@@ -1,6 +1,44 @@
-import { Navbar, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import {
+  Navbar,
+  Button,
+  Form,
+  InputGroup,
+  Alert,
+  Spinner,
+} from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+
 import { AuthHook } from "../hooks";
+
+const NavBarSearch = () => {
+  const navigate = useNavigate();
+  const [navSearchMessage, setNavSearchMessage] = useState<string>("");
+
+  const navBarSearch = () => {
+    const query = new URLSearchParams();
+    query.set("search", navSearchMessage as string);
+    navigate(`/products?${query.toString()}`);
+  };
+  return (
+    <Form action={navBarSearch}>
+      <InputGroup className="mb-3">
+        <Form.Control
+          name="NavbarSearch"
+          type="input"
+          placeholder="Search"
+          aria-label="Navigation bar search field"
+          aria-describedby="search-button"
+          value={navSearchMessage}
+          onChange={(e) => setNavSearchMessage(e.target.value)}
+        />
+        <Button type="submit" variant="outline-secondary" id="search-button">
+          Search
+        </Button>
+      </InputGroup>
+    </Form>
+  );
+};
 
 const NavigationBar = () => {
   const padding = {
@@ -10,11 +48,15 @@ const NavigationBar = () => {
   const { user, isLoading, error, logout } = AuthHook();
 
   if (isLoading) {
-    return <div>loading ...</div>;
+    return <Spinner animation="border" />;
   }
 
   if (error) {
-    return <div>error with system, try agian later.</div>;
+    return (
+      <Alert variant="danger">
+        error occured when getting products, try again later.
+      </Alert>
+    );
   }
 
   return (
@@ -25,10 +67,13 @@ const NavigationBar = () => {
       <Link style={padding} to="/products">
         products
       </Link>
-      <Link style={padding} to="/login">
-        login pace
-      </Link>
-
+      {!user ? (
+        <Link style={padding} to="/login">
+          login
+        </Link>
+      ) : (
+        <></>
+      )}
       {user ? (
         <>
           <div>hello {user.user.username}</div>
@@ -38,10 +83,9 @@ const NavigationBar = () => {
           <Button onClick={logout}>Logout</Button>
         </>
       ) : (
-        <div></div>
+        <></>
       )}
-      {/* 
-      <SearchBurron /> */}
+      <NavBarSearch />
     </Navbar>
   );
 };

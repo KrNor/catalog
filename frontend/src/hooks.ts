@@ -1,4 +1,7 @@
 import Cookies from "js-cookie";
+import { useDispatch, useSelector, useStore } from "react-redux";
+
+import type { AppDispatch, AppStore, RootState, LoginDetails } from "./types";
 import {
   api,
   useGetCurrentUserQuery,
@@ -6,17 +9,9 @@ import {
   useLogoutUserMutation,
 } from "./reducers/apiReducer";
 
-import { useDispatch, useSelector, useStore } from "react-redux";
-import type { AppDispatch, AppStore, RootState } from "./types";
-
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 export const useAppSelector = useSelector.withTypes<RootState>();
 export const useAppStore = useStore.withTypes<AppStore>();
-
-interface LoginDetails {
-  username: string;
-  password: string;
-}
 
 export const AuthHook = () => {
   const dispatch = useDispatch();

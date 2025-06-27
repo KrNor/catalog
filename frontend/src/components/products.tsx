@@ -1,21 +1,26 @@
-import { Container, Row, Card, Col } from "react-bootstrap";
+import { Container, Row, Card, Col, Alert, Spinner } from "react-bootstrap";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useGetAllProductsQuery } from "../reducers/apiReducer";
+
+import { useGetProductsQuery } from "../reducers/apiReducer";
+import type { SimplifiedProduct } from "../types";
 
 import SearchFilters from "./searchFilters";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const SingleProduct = (props: any) => {
+interface SingleProductProps {
+  product: SimplifiedProduct;
+}
+
+const SingleProduct = ({ product }: SingleProductProps) => {
   const navigate = useNavigate();
   return (
     <Card
-      onClick={() => navigate(`/products/${props.product.id}`)}
+      onClick={() => navigate(`/products/${product.id}`)}
       style={{ width: "32rem", cursor: "pointer" }}
     >
       <Card.Img variant="top" src="src/images/holderSmall.jpg" />
       <Card.Body>
-        <Card.Title>{props.product.name}</Card.Title>
-        <Card.Text>{props.product.descriptionShort}</Card.Text>
+        <Card.Title>{product.name}</Card.Title>
+        <Card.Text>{product.descriptionShort}</Card.Text>
       </Card.Body>
     </Card>
   );
@@ -25,14 +30,18 @@ const Products = () => {
   const [searchParams] = useSearchParams();
   const queryString = searchParams.toString();
 
-  const { data, error, isLoading } = useGetAllProductsQuery(queryString);
+  const { data, error, isLoading } = useGetProductsQuery(queryString);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Spinner animation="border" />;
   }
 
   if (error) {
-    return <div>error occured when getting products, try again later.</div>;
+    return (
+      <Alert variant="danger">
+        error occured when getting products, try again later.
+      </Alert>
+    );
   }
 
   if (data) {
@@ -55,7 +64,7 @@ const Products = () => {
                     xl={2} // 6 products per row on extra large screens
                     className="mb-4 d-flex"
                   >
-                    <SingleProduct key={product.id} product={product} />
+                    <SingleProduct product={product} />
                   </Col>
                 ))}
               </Row>

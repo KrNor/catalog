@@ -4,16 +4,7 @@ import store from "./store";
 export type AppStore = typeof store;
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<AppStore["getState"]>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = AppStore["dispatch"];
-
-export interface QueryObject {
-  minPrice?: string;
-  maxPrice?: string;
-  search?: string;
-  availability?: string;
-  category?: string;
-}
 
 export interface Product extends SimplifiedProduct {
   identifier: string;
@@ -44,24 +35,6 @@ export interface UserObject {
 export interface LoginDetails {
   username: string;
   password: string;
-}
-
-export interface SearchFilterObject {
-  minPrice?: string;
-  maxPrice?: string;
-  search?: string;
-  availability?: string;
-  tags: { [key: string]: unknown };
-  category?: string;
-  sortType?:
-    | "priceLow"
-    | "priceHigh"
-    | "nameAz"
-    | "nameZa"
-    | "oldest"
-    | "newest";
-  resultsPerPage?: number;
-  currentPage?: number;
 }
 
 export interface CategoryToReturn {

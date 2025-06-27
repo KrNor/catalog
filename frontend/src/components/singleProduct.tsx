@@ -9,6 +9,8 @@ import {
   Table,
   Tab,
   Nav,
+  Alert,
+  Spinner,
 } from "react-bootstrap";
 
 import { useGetFullProductQuery } from "../reducers/apiReducer";
@@ -23,11 +25,13 @@ const SingleProductDetailed = () => {
   const { data, error, isLoading } = useGetFullProductQuery(productId);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Spinner animation="border" />;
   }
 
   if (error) {
-    return <div>error occured when getting product, try again later.</div>;
+    <Alert variant="danger">
+      error occured when getting product, try again later.
+    </Alert>;
   }
 
   if (data) {

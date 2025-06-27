@@ -1,5 +1,6 @@
 import { Container, Spinner, Alert } from "react-bootstrap";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import SingleProductDetailed from "./components/singleProduct";
 import Products from "./components/products";
 import NavigationBar from "./components/navigationBar";
@@ -10,7 +11,6 @@ import CreateProduct from "./components/adminComp/createProduct";
 import ManageProducts from "./components/adminComp/manageProducts";
 import ProtectedRoute from "./components/protectedRoute";
 import PanelHome from "./components/adminComp/panelHome";
-
 import Login from "./components/loginPage";
 
 import { AuthHook } from "./hooks";
@@ -22,7 +22,7 @@ const Home = () => (
 );
 
 const App = () => {
-  const { isLoading, error } = AuthHook(); //user,
+  const { isLoading, error } = AuthHook(); //user?
 
   if (isLoading) return <Spinner animation="border" />;
 

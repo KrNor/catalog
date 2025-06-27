@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
 import type {
   Product,
   SimplifiedProduct,
@@ -16,7 +17,7 @@ export const api = createApi({
   }),
   tagTypes: ["Product", "User", "Category"],
   endpoints: (build) => ({
-    getAllProducts: build.query<SimplifiedProduct[], string>({
+    getProducts: build.query<SimplifiedProduct[], string>({
       query: (queryString) => ({ url: `product?${queryString}` }),
       providesTags: (result) =>
         result
@@ -116,7 +117,7 @@ export const api = createApi({
 });
 //   invalidatesTags: [{ type: "User", id: "CURRENT" }],
 export const {
-  useGetAllProductsQuery,
+  useGetProductsQuery,
   useGetFullProductQuery,
   useGetCurrentUserQuery,
   useLoginUserMutation,

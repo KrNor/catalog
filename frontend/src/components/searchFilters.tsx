@@ -1,28 +1,13 @@
 import { Form, InputGroup, Button, Col, Row } from "react-bootstrap";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { searchSchema, type SearchSchema } from "../validation";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { searchSchema, type SearchSchema } from "../validation";
 
 const SearchFilters = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const validSortTypes = [
-    "",
-    "newest",
-    "oldest",
-    "priceAsc",
-    "priceDesc",
-    "nameAZ",
-    "nameZA",
-  ] as const;
-
-  const sortTypeFromParams = params.get("sortType");
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sortType = validSortTypes.includes(sortTypeFromParams as any)
-    ? (sortTypeFromParams as (typeof validSortTypes)[number])
-    : "";
 
   const { register, handleSubmit } = useForm<SearchSchema>({
     resolver: zodResolver(searchSchema),
@@ -34,7 +19,7 @@ const SearchFilters = () => {
         ? Number(params.get("availability"))
         : "",
       category: params.get("category") || "",
-      sortType,
+      sortType: params.get("sortType") || "",
       resultsPerPage: params.get("resultsPerPage")
         ? Number(params.get("resultsPerPage"))
         : 60,
@@ -48,10 +33,6 @@ const SearchFilters = () => {
     const query = new URLSearchParams();
 
     Object.entries(data).forEach(([key, value]) => {
-      // if (key === "availability") {
-      //   console.log(typeof value);
-      //   console.log(value);
-      // }
       if (value) {
         query.set(key, value as string);
       }
@@ -70,6 +51,7 @@ const SearchFilters = () => {
           <Col className="f1 relative">
             <Form.Control
               type="number"
+              min="0"
               placeholder="Min Price"
               {...register("minPrice")}
             />
@@ -77,6 +59,7 @@ const SearchFilters = () => {
           <Col className="f1 relative">
             <Form.Control
               type="number"
+              min="0"
               placeholder="Max Price"
               {...register("maxPrice")}
             />
@@ -93,6 +76,14 @@ const SearchFilters = () => {
         <option value="priceDesc">Decreasing Price</option>
         <option value="nameAZ">A to Z</option>
         <option value="nameZA">Z to A</option>
+      </Form.Select>
+      <Form.Select {...register("resultsPerPage")}>
+        <option value="">60 (default)</option>
+        <option value="20">20</option>
+        <option value="40">40</option>
+        <option value="60">60</option>
+        <option value="120">120</option>
+        <option value="200">200</option>
       </Form.Select>
       <Button type="submit">Search</Button>
     </Form>

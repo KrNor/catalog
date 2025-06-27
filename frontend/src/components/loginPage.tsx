@@ -1,14 +1,13 @@
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import { useDispatch } from "react-redux";
-import { AuthHook } from "../hooks";
+import { Form, Button, Alert } from "react-bootstrap";
+
+import { useAppDispatch, AuthHook } from "../hooks";
 import { api } from "../reducers/apiReducer";
 import type { LoginDetails } from "../types";
 
 const Login = () => {
   const { user, error, login, logout } = AuthHook();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const HandleLogout = async () => {
     await logout();
@@ -24,9 +23,10 @@ const Login = () => {
       </div>
     );
   }
-
   if (error) {
-    return <div>error related to login, try again later</div>;
+    return (
+      <Alert variant="danger">error related to login, try again later</Alert>
+    );
   }
 
   const loginSubmit = async (formData: FormData) => {
@@ -39,7 +39,7 @@ const Login = () => {
         usersLogins[pair[0]] = pair[1];
       }
     }
-    // console.log(usersLogins);
+
     if (usersLogins.username.length > 2 && usersLogins.password.length > 2) {
       const loginObj = {
         username: usersLogins.username,
@@ -54,13 +54,11 @@ const Login = () => {
         }
         console.log("unknown error");
       }
-
-      // navigate(`/`);
     } else {
       console.log("bad login try again");
     }
   };
-  console.log(user);
+
   return (
     <Form action={loginSubmit}>
       <Form.Group className="mb-3" controlId="formBasicUsername">

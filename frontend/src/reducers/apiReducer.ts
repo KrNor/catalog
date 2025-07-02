@@ -9,6 +9,12 @@ import type {
   FullCategoryObject,
 } from "../types";
 
+interface CategoryToSave {
+  name: string;
+  description: string;
+  parent?: string;
+}
+
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -55,16 +61,15 @@ export const api = createApi({
         method: "POST",
       }),
     }),
-    getBaseCategoryFamily: build.query<CategoryFamilyObject, void>({
-      query: () => ({
-        url: `category/base`,
-      }),
-      providesTags: () => [{ type: "Category", id: "BASE" }],
-    }),
-    getCategoryFamily: build.query<CategoryFamilyObject, string>({
-      query: (categoryId) => ({
-        url: `category/base/:${categoryId}`,
-      }),
+    getCategoryFamily: build.query<CategoryFamilyObject, string | undefined>({
+      query: (categoryId) =>
+        categoryId
+          ? {
+              url: `category/base/${categoryId}`,
+            }
+          : {
+              url: `category/base`,
+            },
       providesTags: (_result, _error, id) => [{ type: "Category", id }],
     }),
     getAllCategories: build.query<FullCategoryObject[], void>({
@@ -113,6 +118,14 @@ export const api = createApi({
         "Category",
       ],
     }),
+    createCategory: build.mutation<FullCategoryObject, CategoryToSave>({
+      query: (body) => ({
+        url: `category`,
+        body: body,
+        method: "POST",
+      }),
+      invalidatesTags: ["Category"],
+    }),
   }),
 });
 //   invalidatesTags: [{ type: "User", id: "CURRENT" }],
@@ -122,10 +135,10 @@ export const {
   useGetCurrentUserQuery,
   useLoginUserMutation,
   useLogoutUserMutation,
-  useGetBaseCategoryFamilyQuery,
   useGetCategoryFamilyQuery,
   useGetAllCategoriesQuery,
   useDeleteCategoryMutation,
   useEditCategoryMutation,
+  useCreateCategoryMutation,
 } = api;
 export default api.reducer;

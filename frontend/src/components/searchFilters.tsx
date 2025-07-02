@@ -3,13 +3,13 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { searchSchema, type SearchSchema } from "../validation";
+import { searchSchema, type SearchSchemaType } from "../validation";
 
 const SearchFilters = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
 
-  const { register, handleSubmit } = useForm<SearchSchema>({
+  const { register, handleSubmit } = useForm<SearchSchemaType>({
     resolver: zodResolver(searchSchema),
     defaultValues: {
       minPrice: params.get("minPrice") ? Number(params.get("minPrice")) : "",
@@ -29,7 +29,7 @@ const SearchFilters = () => {
     },
   });
 
-  const onSubmit = (data: SearchSchema) => {
+  const onSubmit = (data: SearchSchemaType) => {
     const query = new URLSearchParams();
 
     Object.entries(data).forEach(([key, value]) => {

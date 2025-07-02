@@ -1,15 +1,23 @@
 import z from "zod";
-import mongoose from "mongoose";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, Types } from "mongoose";
 import { ProductDocument } from "./models/product";
 import { Request } from "express";
 
+const validMongoId = (val: string) => {
+  return Types.ObjectId.isValid(val);
+};
+
 export const zodProductFilter = z.object({
-  minPrice: z.coerce.number().optional(),
-  maxPrice: z.coerce.number().optional(),
-  search: z.string().optional(),
-  availability: z.coerce.number().optional(),
-  category: z.string().optional(),
+  minPrice: z.coerce.number().nonnegative().int().optional(),
+  maxPrice: z.coerce.number().nonnegative().int().optional(),
+  search: z.string().trim().optional(),
+  availability: z.coerce.number().gte(-4).optional(),
+  category: z
+    .string()
+    .refine((val) => {
+      return validMongoId(val);
+    })
+    .optional(),
   sortType: z
     .enum(["", "newest", "oldest", "priceAsc", "priceDesc", "nameAZ", "nameZA"])
     .optional(),
@@ -20,38 +28,49 @@ export const zodProductFilter = z.object({
 export type ProductFilter = z.infer<typeof zodProductFilter>;
 
 export const zodFilterInitial = z.object({
-  tagName: z.string(),
-  tagAttributes: z.array(z.string().optional()),
+  tagName: z.string().max(125),
+  tagAttributes: z.array(z.string().max(125).optional()),
 });
 
 export const zodTag = z.object({
-  tagName: z.string(),
-  tagAttributes: z.array(z.string().optional()),
+  tagName: z.string().max(125),
+  tagAttributes: z.array(z.string().max(125).optional()),
 });
 
 export const zodTagInsideProduct = z.object({
-  tagName: z.string(),
-  tagAttribute: z.string(),
+  tagName: z.string().max(125),
+  tagAttribute: z.string().max(125),
 });
 
 export const zodCategory = z.object({
-  name: z.string(),
-  description: z.string(),
-  parent: z.string().optional(),
-  lineage: z.array(z.string()).optional(),
+  name: z.string().min(3).max(125),
+  description: z.string().min(3).max(255),
+  parent: z
+    .string()
+    .refine((val) => {
+      return validMongoId(val);
+    })
+    .optional(),
+  lineage: z
+    .array(
+      z.string().refine((val) => {
+        return validMongoId(val);
+      })
+    )
+    .optional(),
 });
 
 export const zodProduct = z.object({
-  name: z.string().min(3),
-  price: z.number().nonnegative(),
+  name: z.string().min(3).max(125),
+  price: z.number().nonnegative().int(),
   availability: z.number().gte(-4),
-  identifier: z.string(),
-  descriptionShort: z.string().min(3),
-  descriptionLong: z.string().min(3),
+  identifier: z.string().max(30),
+  descriptionShort: z.string().min(3).max(255),
+  descriptionLong: z.string().min(3).max(2000),
   category: z
     .string()
     .refine((val) => {
-      return mongoose.Types.ObjectId.isValid(val);
+      return validMongoId(val);
     })
     .optional(),
   tags: z.array(zodTagInsideProduct),

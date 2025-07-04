@@ -7,7 +7,10 @@ import type {
   LoginDetails,
   CategoryFamilyObject,
   FullCategoryObject,
+  TagToSave,
 } from "../types";
+
+import type { TagWithIdSchemaType, ProductSchemaType } from "../validation";
 
 interface CategoryToSave {
   name: string;
@@ -21,7 +24,7 @@ export const api = createApi({
     baseUrl: "http://localhost:3000/api/",
     credentials: "include",
   }),
-  tagTypes: ["Product", "User", "Category"],
+  tagTypes: ["Product", "User", "Category", "Tag"],
   endpoints: (build) => ({
     getProducts: build.query<SimplifiedProduct[], string>({
       query: (queryString) => ({ url: `product?${queryString}` }),
@@ -126,6 +129,37 @@ export const api = createApi({
       }),
       invalidatesTags: ["Category"],
     }),
+    createProduct: build.mutation<Product, ProductSchemaType>({
+      query: (body) => ({
+        url: `product`,
+        body: body,
+        method: "POST",
+      }),
+      invalidatesTags: ["Product"],
+    }),
+    getAllTags: build.query<TagWithIdSchemaType[], void>({
+      query: () => ({
+        url: `tag`,
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({
+                type: "Tag" as const,
+                id,
+              })),
+              { type: "Tag", id: "LIST" },
+            ]
+          : [{ type: "Tag", id: "LIST" }],
+    }),
+    createTag: build.mutation<TagWithIdSchemaType, TagToSave>({
+      query: (body) => ({
+        url: `tag`,
+        body: body,
+        method: "POST",
+      }),
+      invalidatesTags: [{ type: "Tag", id: "LIST" }, "Tag"],
+    }),
   }),
 });
 //   invalidatesTags: [{ type: "User", id: "CURRENT" }],
@@ -140,5 +174,8 @@ export const {
   useDeleteCategoryMutation,
   useEditCategoryMutation,
   useCreateCategoryMutation,
+  useCreateProductMutation,
+  useGetAllTagsQuery,
+  useCreateTagMutation,
 } = api;
 export default api.reducer;

@@ -20,21 +20,49 @@ export const createCategorySchema = z.object({
 });
 
 export const tagInsideProductSchema = z.object({
-  tagName: z.string().max(125),
-  tagAttribute: z.string().max(125),
+  tagName: z.string().min(3).max(125),
+  tagAttribute: z.string().min(3).max(125),
+});
+
+export const tagSchema = z.object({
+  tagName: z.string().min(3).max(125),
+  tagAttributes: z.array(z.string().min(3).max(125)),
+});
+
+export const tagWithIdSchema = z.object({
+  ...tagSchema.shape,
+  id: z.string(),
+});
+
+export const tagInsideProductWithIdSchema = z.object({
+  ...tagInsideProductSchema.shape,
+  id: z.string(),
 });
 
 export const productSchema = z.object({
   name: z.string().min(3).max(125),
-  price: z.number().nonnegative().int(),
-  availability: z.number().gte(-4),
-  identifier: z.string().max(30),
+  price: z.coerce
+    .number({
+      required_error: "price is required",
+      invalid_type_error: "price must be a number",
+    })
+    .nonnegative()
+    .int(),
+  availability: z.coerce.number().gte(-4),
+  identifier: z.string().min(3).max(30),
   descriptionShort: z.string().min(3).max(255),
   descriptionLong: z.string().min(3).max(2000),
-  category: z.string().optional(),
+  category: z.string({ required_error: "Selecting a category is required" }),
   tags: z.array(tagInsideProductSchema),
 });
 
 export type SearchSchemaType = z.infer<typeof searchSchema>;
 export type ProductSchemaType = z.infer<typeof productSchema>;
 export type CategorySchemaType = z.infer<typeof createCategorySchema>;
+export type TagSchemaType = z.infer<typeof tagSchema>;
+export type TagWithIdSchemaType = z.infer<typeof tagWithIdSchema>;
+
+export type TagInsideProductSchemaType = z.infer<typeof tagInsideProductSchema>;
+export type TagInsideProductWithIdSchemaType = z.infer<
+  typeof tagInsideProductWithIdSchema
+>;

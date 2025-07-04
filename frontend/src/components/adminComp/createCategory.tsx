@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
-// import { skipToken } from "@reduxjs/toolkit/query/react";
 import { Form, Button, Spinner, Alert } from "react-bootstrap";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 import {
   useGetCategoryFamilyQuery,
@@ -76,9 +76,18 @@ const CreateCategory = () => {
       }
       reset();
       setErrorMessage("New Category successfully created!");
-    } catch {
-      console.error("There was a problem with creating the category");
-      setErrorMessage("There was a problem with creating the category");
+    } catch (err: unknown) {
+      console.error("Failed to create category:", err);
+      const fetchErr = err as FetchBaseQueryError;
+      if (
+        fetchErr.data &&
+        typeof fetchErr.data === "object" &&
+        "error" in fetchErr.data
+      ) {
+        setErrorMessage(fetchErr.data.error as string);
+      } else {
+        setErrorMessage("An unknown error occurred while saving.");
+      }
     }
   };
 

@@ -47,12 +47,13 @@ export const productSchema = z.object({
       invalid_type_error: "price must be a number",
     })
     .nonnegative()
-    .int(),
+    .int()
+    .min(1, "product must cost at least 1 cent"),
   availability: z.coerce.number().gte(-4),
   identifier: z.string().min(3).max(30),
   descriptionShort: z.string().min(3).max(255),
   descriptionLong: z.string().min(3).max(2000),
-  category: z.string({ required_error: "Selecting a category is required" }),
+  category: z.string().min(10, "select a category"),
   tags: z.array(tagInsideProductSchema),
 });
 

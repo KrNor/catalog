@@ -1,5 +1,14 @@
 import type { FieldError } from "react-hook-form";
-import { Form, Button, Alert, Spinner, ListGroup } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Alert,
+  Spinner,
+  ListGroup,
+  Row,
+  // Col,
+  // Container,
+} from "react-bootstrap";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { ZodError } from "zod";
 import { useState, type Dispatch, type SetStateAction } from "react";
@@ -9,7 +18,11 @@ import {
   useGetAllTagsQuery,
   useCreateTagMutation,
 } from "../../reducers/apiReducer";
-import type { CategoryToReturn, TagToSave } from "../../types";
+import type {
+  CategoryToReturn,
+  TagToSave,
+  CategoryFamilyObject,
+} from "../../types";
 import {
   tagInsideProductSchema,
   type TagWithIdSchemaType,
@@ -27,7 +40,124 @@ interface CreateAndSelectTagsProps {
   setErrorMessage: Dispatch<SetStateAction<string>>;
 }
 
-export const CategorySelect = ({
+interface CategorySelectChildProps {
+  onChange?: (value: string) => void;
+  lineage?: CategoryFamilyObject;
+}
+
+interface CategorySelectLineageProps {
+  onChange?: (value: string) => void;
+  lineage?: CategoryFamilyObject;
+}
+
+const CategorySelectChild = ({
+  onChange,
+  lineage,
+}: CategorySelectChildProps) => {
+  const [localCategory, setlocalCategory] = useState<string | undefined>(
+    undefined
+  );
+  const {
+    data: lineage2,
+    isError,
+    isLoading,
+  } = useGetCategoryFamilyQuery(localCategory, { skip: !!lineage });
+
+  if (isError) return <Alert variant="danger">Error fetching categories</Alert>;
+
+  if (isLoading) return <Spinner animation="border" />;
+
+  const realLineage = lineage || lineage2;
+
+  const handleSelectCategory = (id: string) => {
+    if (onChange) {
+      onChange(id);
+    } else {
+      setlocalCategory(id);
+    }
+  };
+
+  return (
+    <div className="flex-grow-1">
+      <Form.Select
+        onChange={(e) => handleSelectCategory(e.target.value)}
+        defaultValue=""
+      >
+        <option value="">Select a category</option>
+        {realLineage?.imediateChildren.map((child: CategoryToReturn) => (
+          <option key={child.id} value={child.id}>
+            {child.name}
+          </option>
+        ))}
+      </Form.Select>
+    </div>
+  );
+};
+
+const CategorySelectLineage = ({
+  onChange,
+  lineage,
+}: CategorySelectLineageProps) => {
+  const [localCategory, setlocalCategory] = useState<string | undefined>(
+    undefined
+  );
+  const {
+    data: lineage2,
+    isError,
+    isLoading,
+  } = useGetCategoryFamilyQuery(localCategory, { skip: !!lineage });
+
+  if (isError) return <Alert variant="danger">Error fetching categories</Alert>;
+
+  if (isLoading) return <Spinner animation="border" />;
+
+  const realLineage = lineage || lineage2;
+
+  const handleSelectCategory = (id: string) => {
+    if (onChange) {
+      onChange(id);
+    } else {
+      setlocalCategory(id);
+    }
+  };
+  return (
+    <div
+      className="me-3"
+      style={{ whiteSpace: "nowrap" }}
+      key="category-select-paragraph"
+    >
+      <a
+        key="category-select-base-paragraph"
+        className="pe-auto"
+        onClick={() => handleSelectCategory("")}
+      >
+        /{" "}
+      </a>
+      {realLineage?.lineage.map((parent) => {
+        return (
+          <span key={`${parent.id}parent`}>
+            <a
+              className="pe-auto"
+              onClick={() => handleSelectCategory(parent.id)}
+            >
+              {parent.name}{" "}
+            </a>
+            {" /"}
+          </span>
+        );
+      })}
+      {realLineage && realLineage.category[0] ? (
+        <a key={`${realLineage.category[0].id}parent`}>
+          {realLineage.category[0].name}
+        </a>
+      ) : (
+        <a></a>
+      )}
+    </div>
+  );
+};
+
+export const CategorySelectInForm = ({
   currentCategory = "",
   onChange,
   error,
@@ -42,49 +172,16 @@ export const CategorySelect = ({
 
   if (isLoading || lineage === undefined) return <Spinner animation="border" />;
 
-  const handleBackCategory = () => {
-    if (lineage.lineage.length === 0) {
-      onChange("");
-    } else {
-      const newCurrent = lineage.lineage[lineage.lineage.length - 1];
-      onChange(newCurrent.id);
-    }
-  };
-
-  const handleSelectCategory = (id: string) => {
-    onChange(id);
-  };
-
   return (
     <div>
-      <div className="d-flex justify-content-around">
-        <Form.Label>current category:</Form.Label>
-        <Form.Group className="mb-3">
-          <Form.Label>
-            {lineage.category[0]
-              ? lineage.category[0].name
-              : "no category selected"}
-          </Form.Label>
-        </Form.Group>
-      </div>
-      {error && <Form.Text className="text-danger">{error.message}</Form.Text>}
       <Form.Label>select category:</Form.Label>
-      <Form.Group className="mb-3">
-        <Button onClick={handleBackCategory}>Back</Button>
-      </Form.Group>
-      <div className="d-flex justify-content-around">
-        <Form.Select
-          onChange={(e) => handleSelectCategory(e.target.value)}
-          defaultValue=""
-        >
-          <option value="">Select a category</option>
-          {lineage.imediateChildren.map((child: CategoryToReturn) => (
-            <option key={child.id} value={child.id}>
-              {child.name}
-            </option>
-          ))}
-        </Form.Select>
-      </div>
+      <Row>
+        <div className="d-flex align-items-center">
+          <CategorySelectLineage onChange={onChange} lineage={lineage} />
+          <CategorySelectChild onChange={onChange} lineage={lineage} />
+        </div>
+      </Row>
+      {error && <Form.Text className="text-danger">{error.message}</Form.Text>}
     </div>
   );
 };

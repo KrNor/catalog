@@ -6,7 +6,10 @@ import { useState } from "react";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { NumericFormat } from "react-number-format";
 
-import { CategorySelect, CreateAndSelectTags } from "./reusableComponents";
+import {
+  CategorySelectInForm,
+  CreateAndSelectTags,
+} from "./reusableComponents";
 
 import { useCreateProductMutation } from "../../reducers/apiReducer";
 
@@ -172,14 +175,13 @@ const CreateProduct = () => {
           name="category"
           control={control}
           render={({ field }) => (
-            <CategorySelect
+            <CategorySelectInForm
               currentCategory={field.value}
               onChange={field.onChange}
               error={errors.category}
             />
           )}
         />
-
         <Controller
           name="tags"
           control={control}

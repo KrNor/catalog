@@ -172,6 +172,7 @@ export const {
   useGetCategoryFamilyQuery,
   useGetAllCategoriesQuery,
   useDeleteCategoryMutation,
+  useGetCategoryByIdQuery,
   useEditCategoryMutation,
   useCreateCategoryMutation,
   useCreateProductMutation,

@@ -15,7 +15,7 @@ import {
 } from "../../validation";
 
 const CreateCategory = () => {
-  const [currentParent, setCurrentParent] = useState<string | undefined>(
+  const [currentCategory, setCurrentCategory] = useState<string | undefined>(
     undefined
   );
 
@@ -25,7 +25,7 @@ const CreateCategory = () => {
     data: lineage,
     isError,
     isLoading,
-  } = useGetCategoryFamilyQuery(currentParent);
+  } = useGetCategoryFamilyQuery(currentCategory);
 
   const [createCategory, { isLoading: isSubmitting }] =
     useCreateCategoryMutation();
@@ -46,18 +46,18 @@ const CreateCategory = () => {
   if (isLoading || lineage === undefined) return <Spinner animation="border" />;
   if (isError) return <Alert variant="danger">Error fetching categories</Alert>;
 
-  const handleBackParent = () => {
+  const handleBackCategory = () => {
     if (lineage.lineage.length === 0) {
-      setCurrentParent(undefined);
+      setCurrentCategory(undefined);
     } else {
       const newCurrent = lineage.lineage[lineage.lineage.length - 1];
 
-      setCurrentParent(newCurrent.id);
+      setCurrentCategory(newCurrent.id);
     }
   };
 
   const handleSelectChild = (id: string) => {
-    setCurrentParent(id);
+    setCurrentCategory(id);
   };
 
   const onSubmit = async (formData: CategorySchemaType) => {
@@ -142,7 +142,7 @@ const CreateCategory = () => {
 
         <Form.Label>select parent category:</Form.Label>
         <Form.Group className="mb-3">
-          <Button onClick={handleBackParent}>Back</Button>
+          <Button onClick={handleBackCategory}>Back</Button>
         </Form.Group>
         <div className="d-flex justify-content-around">
           <Form.Select

@@ -5,6 +5,8 @@ import {
   InputGroup,
   Alert,
   Spinner,
+  Container,
+  Nav,
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -41,10 +43,6 @@ const NavBarSearch = () => {
 };
 
 const NavigationBar = () => {
-  const padding = {
-    padding: 5,
-  };
-
   const { user, isLoading, error, logout } = AuthHook();
 
   if (isLoading) {
@@ -60,33 +58,40 @@ const NavigationBar = () => {
   }
 
   return (
-    <Navbar>
-      <Link style={padding} to="/">
-        home
-      </Link>
-      <Link style={padding} to="/products">
-        products
-      </Link>
-      {!user ? (
-        <Link style={padding} to="/login">
-          login
-        </Link>
-      ) : (
-        <></>
-      )}
-      {user ? (
-        <>
-          <div>hello {user.user.username}</div>
-          <Link style={padding} to="/panel">
-            admin panel
-          </Link>
-          <Button onClick={logout}>Logout</Button>
-        </>
-      ) : (
-        <></>
-      )}
-      <NavBarSearch />
-    </Navbar>
+    <Container>
+      <Navbar className="bg-body-tertiary">
+        <Navbar.Brand>
+          <Link to="/">Catalog</Link>
+        </Navbar.Brand>
+        <Nav className="me-auto">
+          <Nav.Link>
+            <Link to="/products">products</Link>
+          </Nav.Link>
+          {!user ? (
+            <Nav.Link>
+              <Link to="/login">login</Link>
+            </Nav.Link>
+          ) : (
+            <></>
+          )}
+        </Nav>
+        <Nav className="justify-content-end">
+          {user ? (
+            <>
+              <Navbar.Text>hello {user.user.username}</Navbar.Text>
+              <Nav.Link>
+                <Link to="/panel">admin panel</Link>
+              </Nav.Link>
+
+              <Button onClick={logout}>Logout</Button>
+            </>
+          ) : (
+            <></>
+          )}
+          <NavBarSearch />
+        </Nav>
+      </Navbar>
+    </Container>
   );
 };
 

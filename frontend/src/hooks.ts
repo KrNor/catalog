@@ -19,7 +19,7 @@ export const useAppStore = useStore.withTypes<AppStore>();
 
 export const CategoryHook = (localCategory: string | undefined) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [currentCategory, setCurrentCategory] = useState<string | undefined>(
+  const [currentCategory, _setCurrentCategory] = useState<string | undefined>(
     localCategory
   );
 

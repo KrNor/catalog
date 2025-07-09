@@ -64,24 +64,14 @@ const NavigationBar = () => {
           <Link to="/">Catalog</Link>
         </Navbar.Brand>
         <Nav className="me-auto">
-          <Nav.Link>
-            <Link to="/products">products</Link>
-          </Nav.Link>
-          {!user ? (
-            <Nav.Link>
-              <Link to="/login">login</Link>
-            </Nav.Link>
-          ) : (
-            <></>
-          )}
+          <Link to="/products">products</Link>
         </Nav>
+        {!user ? <Link to="/login">login</Link> : <></>}
         <Nav className="justify-content-end">
           {user ? (
             <>
               <Navbar.Text>hello {user.user.username}</Navbar.Text>
-              <Nav.Link>
-                <Link to="/panel">admin panel</Link>
-              </Nav.Link>
+              <Link to="/panel">admin panel</Link>
 
               <Button onClick={logout}>Logout</Button>
             </>

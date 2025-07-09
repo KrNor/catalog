@@ -12,6 +12,7 @@ import ManageProducts from "./components/adminComp/manageProducts";
 import ProtectedRoute from "./components/protectedRoute";
 import PanelHome from "./components/adminComp/panelHome";
 import Login from "./components/loginPage";
+import SingleProductEdit from "./components/adminComp/singleProductEdit";
 
 import { AuthHook } from "./hooks";
 
@@ -44,6 +45,10 @@ const App = () => {
               <Route path="manageCategories" element={<ManageCategories />} />
               <Route path="createProduct" element={<CreateProduct />} />
               <Route path="manageProducts" element={<ManageProducts />} />
+              <Route
+                path="manageProducts/:id"
+                element={<SingleProductEdit />}
+              />
             </Route>
           </Route>
           <Route path="/" element={<Home />} />

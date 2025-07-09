@@ -1,8 +1,8 @@
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { Button, Form, Alert, Spinner } from "react-bootstrap";
 import { useForm, Controller } from "react-hook-form";
-import { productSchema, type ProductSchemaType } from "../../validation";
-import { Form, Button, Alert } from "react-bootstrap";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { NumericFormat } from "react-number-format";
 
@@ -10,13 +10,22 @@ import {
   CategorySelectInForm,
   CreateAndSelectTags,
 } from "./reusableComponents";
+import { productSchema, type ProductSchemaType } from "../../validation";
+import {
+  useGetFullProductQuery,
+  useEditProductMutation,
+} from "../../reducers/apiReducer";
 
-import { useCreateProductMutation } from "../../reducers/apiReducer";
+export const SingleProductEdit = () => {
+  const { id } = useParams();
+  let productId = "";
+  if (!(id === undefined)) {
+    productId = id;
+  }
+  const { data, error, isLoading } = useGetFullProductQuery(productId);
 
-const CreateProduct = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [CreateProduct, { isLoading: isSubmitting }] =
-    useCreateProductMutation();
+  const [EditProduct, { isLoading: isSubmitting }] = useEditProductMutation();
 
   const {
     register,
@@ -31,20 +40,46 @@ const CreateProduct = () => {
     defaultValues: {
       name: "",
       identifier: "",
+      availability: 0,
       descriptionShort: "",
       descriptionLong: "",
-      availability: 0,
       tags: [],
       category: "",
       price: 0.0,
     },
   });
+
+  useEffect(() => {
+    if (data) {
+      reset({
+        name: data.name,
+        identifier: data.identifier,
+        availability: data.availability,
+        descriptionShort: data.descriptionShort,
+        descriptionLong: data.descriptionLong,
+        tags: data.tags,
+        category: data.category,
+        price: data.price,
+      });
+    }
+  }, [data, reset]);
+  if (isLoading || data === undefined) {
+    return <Spinner animation="border" />;
+  }
+
+  if (error) {
+    <Alert variant="danger">
+      error occured when getting product, try again later.
+    </Alert>;
+  }
+
   // console.log("Is form valid:", isValid);
   // console.log("Form values:", watch());
 
   const onSubmit = async (formData: ProductSchemaType) => {
     try {
-      await CreateProduct({
+      await EditProduct({
+        id: productId,
         name: formData.name,
         price: formData.price,
         availability: formData.availability,
@@ -55,7 +90,7 @@ const CreateProduct = () => {
         tags: formData.tags,
       }).unwrap();
 
-      setErrorMessage(`${formData.name} successfully created!`);
+      setErrorMessage(` ${formData.name} was successfully updated!`);
       reset();
     } catch (err: unknown) {
       console.error("Failed to create product:", err);
@@ -195,11 +230,11 @@ const CreateProduct = () => {
           )}
         />
         <Button type="submit">
-          {isSubmitting ? "Creating..." : "Create a Product"}
+          {isSubmitting ? "Editing..." : "Edit the Product"}
         </Button>
       </Form>
     </div>
   );
 };
 
-export default CreateProduct;
+export default SingleProductEdit;

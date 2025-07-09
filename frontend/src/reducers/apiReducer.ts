@@ -160,6 +160,30 @@ export const api = createApi({
       }),
       invalidatesTags: [{ type: "Tag", id: "LIST" }, "Tag"],
     }),
+    editProduct: build.mutation<Product, Partial<Product>>({
+      query(data) {
+        const { id, ...body } = data;
+        return {
+          url: `product/${id}`,
+          body: body,
+          method: "POST",
+        };
+      },
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "Product", id },
+        "Product",
+      ],
+    }),
+    deleteProduct: build.mutation<Product, string>({
+      query: (id) => ({
+        url: `product/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_result, _error, id) => [
+        { type: "Product", id },
+        "Product",
+      ],
+    }),
   }),
 });
 //   invalidatesTags: [{ type: "User", id: "CURRENT" }],
@@ -178,5 +202,7 @@ export const {
   useCreateProductMutation,
   useGetAllTagsQuery,
   useCreateTagMutation,
+  useEditProductMutation,
+  useDeleteProductMutation,
 } = api;
 export default api.reducer;

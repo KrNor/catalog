@@ -36,6 +36,41 @@ export const createProduct = async (
   return newProduct;
 };
 
+export const editProduct = async (
+  id: string,
+  object: ProductType
+): Promise<ProductDocument | null> => {
+  if (object.category) {
+    const wantedCategory = await getCategoryById(object.category);
+    if (!wantedCategory) {
+      throw new Error("specified category doesn't exist");
+    }
+  }
+
+  if (!(object.tags === undefined)) {
+    object.tags.forEach(async (tagg) => {
+      if (!(tagg === undefined)) {
+        const returnedTag = await createTag(tagg);
+        if (returnedTag.tagName) {
+          return {
+            tagName: returnedTag.tagName,
+            tagAttribute: tagg.tagAttribute,
+          };
+        } else {
+          return tagg;
+        }
+      } else {
+        throw new Error("something went wrong related to product and tags");
+      }
+    });
+  }
+
+  const editedProduct = await Product.findByIdAndUpdate(id, object, {
+    new: true,
+  });
+  return editedProduct;
+};
+
 export const getAllProducts = async (): Promise<ProductDocument[]> => {
   const allProducts: ProductDocument[] = await Product.find({});
   return allProducts;

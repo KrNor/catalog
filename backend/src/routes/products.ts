@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createProduct,
+  editProduct,
   getProductById,
   deleteProduct,
   addTagToProduct,
@@ -93,6 +94,15 @@ router.post(
     }
   }
 );
+
+router.post("/:id", productIdParser, newProductParser, async (req, res) => {
+  const editedProduct = await editProduct(req.params.id, req.body);
+  if (!(editedProduct === null)) {
+    res.json(editedProduct);
+  } else {
+    res.status(400).json({ error: "product edit failed" });
+  }
+});
 
 router.delete("/:id", productIdParser, async (req, res) => {
   const deletedProduct = await deleteProduct(req.params.id);

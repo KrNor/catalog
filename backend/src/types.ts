@@ -67,12 +67,12 @@ export const zodProduct = z.object({
   identifier: z.string().max(30),
   descriptionShort: z.string().min(3).max(255),
   descriptionLong: z.string().min(3).max(2000),
-  category: z
-    .string()
-    .refine((val) => {
+  category: z.string().refine(
+    (val) => {
       return validMongoId(val);
-    })
-    .optional(),
+    },
+    { message: "invalid category id" }
+  ),
   tags: z.array(zodTagInsideProduct),
 });
 

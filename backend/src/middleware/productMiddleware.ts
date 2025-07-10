@@ -92,9 +92,9 @@ export const parseQueryAdvanced = (
   let currentPageResult = undefined,
     resultsPerPageResult = undefined;
 
-  if (currentPage && resultsPerPage) {
-    currentPageResult = currentPage;
-    resultsPerPageResult = resultsPerPage;
+  if (currentPage || resultsPerPage) {
+    currentPageResult = currentPage || 1;
+    resultsPerPageResult = resultsPerPage || 60;
   }
 
   if (currentPageResult && resultsPerPageResult) {

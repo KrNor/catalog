@@ -10,9 +10,6 @@ import {
 } from "../../reducers/apiReducer";
 
 const ManageProducts = () => {
-  // const [searchParams] = useSearchParams();
-  // const queryString = searchParams.toString();
-
   const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -30,12 +27,6 @@ const ManageProducts = () => {
       </Alert>
     );
   }
-
-  // const handleEditClick = () => {
-
-  //   onClick={() => navigate(`/products/${product.id}`)}
-
-  // };
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
@@ -59,9 +50,6 @@ const ManageProducts = () => {
     }
   };
 
-  // const handleDelete = (id: string) => {
-  //   console.log("to be deleted: " + id);
-  // };
   return (
     <Container>
       {errorMessage && (
@@ -69,7 +57,7 @@ const ManageProducts = () => {
           {errorMessage}
         </Alert>
       )}
-      {data?.map((product) => (
+      {data?.data.map((product) => (
         <Row key={product.id} className="mx-auto p-2 border border-primary">
           <div className="d-flex align-items-center">
             <div className="flex-grow-1">{product.name}</div>

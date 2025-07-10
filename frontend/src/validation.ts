@@ -9,7 +9,7 @@ export const searchSchema = z.object({
   availability: z.union([z.coerce.number().gte(-4), z.literal("")]).optional(),
   category: z.string().optional(),
   sortType: z.string().optional(),
-  resultsPerPage: z.coerce.number().max(180).default(60).optional(),
+  resultsPerPage: z.coerce.number().min(1).max(200).default(60).optional(),
   currentPage: z.coerce.number().min(1).default(1).optional(),
 });
 

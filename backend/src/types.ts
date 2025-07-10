@@ -21,7 +21,7 @@ export const zodProductFilter = z.object({
   sortType: z
     .enum(["", "newest", "oldest", "priceAsc", "priceDesc", "nameAZ", "nameZA"])
     .optional(),
-  resultsPerPage: z.coerce.number().min(20).max(180).default(60).optional(),
+  resultsPerPage: z.coerce.number().min(20).max(200).default(60).optional(),
   currentPage: z.coerce.number().min(1).default(1).optional(),
 });
 

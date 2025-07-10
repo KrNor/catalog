@@ -109,17 +109,28 @@ const sortObjectReturner = (sortName: string): SortObject => {
   }
 };
 
+interface SimplifiedProductsWithPaginationMeta {
+  data: ProductDocument[];
+  currentPage: number;
+  productCount: number;
+  resultsPerPage: number;
+}
+
 export const getFilteredSimplifiedProducts = async (
   filter: FilterQuery<ProductDocument>,
   sortingType?: string,
   pagingObject?: PageObject
-): Promise<ProductDocument[]> => {
+): Promise<SimplifiedProductsWithPaginationMeta> => {
   const optionsObj = pagingObject
     ? {
         skip: (pagingObject.currentPage - 1) * pagingObject.resultsPerPage,
         limit: pagingObject.resultsPerPage,
       }
-    : {};
+    : {
+        // change later
+        skip: 0,
+        limit: 60,
+      };
   // console.log(pagingObject);
   // if (sortingType) {
   //   console.log(sortObjectReturner(sortingType));
@@ -137,8 +148,17 @@ export const getFilteredSimplifiedProducts = async (
       )
         .sort(sortObjectReturner(sortingType))
         .collation({ locale: "en", strength: 2 });
+      const productCount = await Product.countDocuments({
+        ...filter,
+        category: { $in: listOfCategories },
+      });
 
-      return filteredProducts;
+      return {
+        data: filteredProducts,
+        currentPage: pagingObject?.currentPage || 1,
+        productCount: productCount,
+        resultsPerPage: optionsObj.limit,
+      };
     } else {
       const listOfCategories = await getCategoryListUnique(filter.category);
       const filteredProducts = await Product.find(
@@ -149,7 +169,18 @@ export const getFilteredSimplifiedProducts = async (
         "name price availability descriptionShort category id",
         optionsObj
       );
-      return filteredProducts;
+
+      const productCount = await Product.countDocuments({
+        ...filter,
+        category: { $in: listOfCategories },
+      });
+
+      return {
+        data: filteredProducts,
+        currentPage: pagingObject?.currentPage || 1,
+        productCount: productCount,
+        resultsPerPage: optionsObj.limit,
+      };
     }
   } else {
     if (sortingType) {
@@ -160,14 +191,30 @@ export const getFilteredSimplifiedProducts = async (
       )
         .sort(sortObjectReturner(sortingType))
         .collation({ locale: "en", strength: 2 });
-      return filteredProducts;
+
+      const productCount = await Product.countDocuments(filter);
+
+      return {
+        data: filteredProducts,
+        currentPage: pagingObject?.currentPage || 1,
+        productCount: productCount,
+        resultsPerPage: optionsObj.limit,
+      };
     } else {
       const filteredProducts = await Product.find(
         filter,
         "name price availability descriptionShort category id",
         optionsObj
       );
-      return filteredProducts;
+
+      const productCount = await Product.countDocuments(filter);
+
+      return {
+        data: filteredProducts,
+        currentPage: pagingObject?.currentPage || 1,
+        productCount: productCount,
+        resultsPerPage: optionsObj.limit,
+      };
     }
   }
 };

@@ -45,6 +45,8 @@ import TagRouter from "./routes/tags";
 
 import AuthRouter from "./routes/auth";
 
+import FilterRounter from "./routes/filters";
+
 import {
   zodErrorMiddleware,
   mongooseErrorMiddleware,
@@ -56,6 +58,7 @@ app.use("/api/auth", AuthRouter);
 app.use("/api/product", ProductRouter);
 app.use("/api/category", CategoryRouter);
 app.use("/api/tag", TagRouter);
+app.use("/api/filter", FilterRounter);
 
 // for future probable user creation
 // app.use("/api/user", UserRouter);

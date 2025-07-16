@@ -1,5 +1,6 @@
 import mongoose, { Types, Document, Schema } from "mongoose";
 import { TagInsideProduct } from "../types";
+import { refreshProductCount } from "../middleware/dbMiddleware";
 // import { MongooseImage } from "./image";
 
 interface MongooseImage {
@@ -76,6 +77,24 @@ schema.set("toJSON", {
     delete returnedObject.createdAt;
     delete returnedObject.updatedAt;
   },
+});
+
+schema.post("save", async function (_doc, next) {
+  // console.log("post save pop");
+  await refreshProductCount();
+  next();
+});
+
+schema.post("findOneAndUpdate", async function (_doc, next) {
+  // console.log("post findOneAndUpdate pop");
+  await refreshProductCount();
+  next();
+});
+
+schema.post("findOneAndDelete", async function (_doc, next) {
+  // console.log("post deleteOne pop");
+  await refreshProductCount();
+  next();
 });
 
 const Product = mongoose.model<ProductDocument>("Product", schema);

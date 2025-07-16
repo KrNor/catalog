@@ -6,6 +6,7 @@ import { Types } from "mongoose";
 interface CategoryToReturn {
   id: string;
   name: string;
+  productCount: number;
 }
 interface CategoryPastAndFuture {
   lineage: CategoryToReturn[];
@@ -21,6 +22,7 @@ interface CategoryPastAndFutureWithUnderscore {
 interface CategoryToReturnWithUnderscore {
   _id: string;
   name: string;
+  productCount: number;
 }
 
 export const createCategory = async (
@@ -124,6 +126,23 @@ export const getCategoryListUnique = async (
   return listOfCategories;
 };
 
+export const updateProductCountInCategories = async (
+  categoryIds: Types.ObjectId[]
+) => {
+  for (const catId of categoryIds) {
+    const descendants = await Category.find({
+      $or: [{ _id: catId }, { lineage: catId }],
+    }).select("_id");
+    console.log(descendants);
+    const descendantIds = descendants.map((d) => d._id);
+    const productCount = await Product.countDocuments({
+      category: { $in: descendantIds },
+    });
+
+    await Category.findByIdAndUpdate(catId, { productCount });
+  }
+};
+
 export const getCategoryLineageImediateChildren = async (
   idOfCategory: string
 ): Promise<CategoryPastAndFuture> => {
@@ -131,7 +150,7 @@ export const getCategoryLineageImediateChildren = async (
     idOfCategory
   );
   if (!currentCategory) {
-    throw new Error("sutch category does not exist");
+    throw new Error("such category does not exist");
   }
 
   const result = await Category.aggregate<CategoryPastAndFutureWithUnderscore>([
@@ -139,11 +158,11 @@ export const getCategoryLineageImediateChildren = async (
       $facet: {
         lineage: [
           { $match: { _id: { $in: currentCategory.lineage } } },
-          { $project: { _id: 1, name: 1 } },
+          { $project: { _id: 1, name: 1, productCount: 1 } },
         ],
         imediateChildren: [
           { $match: { parent: currentCategory._id } },
-          { $project: { _id: 1, name: 1 } },
+          { $project: { _id: 1, name: 1, productCount: 1 } },
         ],
       },
     },
@@ -157,6 +176,7 @@ export const getCategoryLineageImediateChildren = async (
       newArray.push({
         id: val._id.toString(),
         name: val.name,
+        productCount: val.productCount,
       });
     });
     return newArray;
@@ -166,7 +186,13 @@ export const getCategoryLineageImediateChildren = async (
 
   return {
     lineage: lineageToReturn,
-    category: [{ id: currentCategory.id, name: currentCategory.name }],
+    category: [
+      {
+        id: currentCategory.id,
+        name: currentCategory.name,
+        productCount: currentCategory.productCount,
+      },
+    ],
     imediateChildren: imediateChildrenToReturn,
   };
 };
@@ -174,7 +200,7 @@ export const getCategoryLineageImediateChildren = async (
 export const getBaseCategories = async (): Promise<CategoryPastAndFuture> => {
   const listOfCategories = await Category.find<CategoryToReturn>(
     { parent: null },
-    "name id"
+    "id name productCount"
   ).exec();
 
   const BaseCategoriesObject: CategoryPastAndFuture = {

@@ -65,6 +65,8 @@ export const parseQueryAdvanced = (
 
   req.productFilter = filterToPass;
 
+  // console.log(filterToPass);
+
   // sorting
 
   let sortingTypeResult = "";

@@ -5,6 +5,7 @@ export interface MongooseCategory {
   description: string;
   parent: Types.ObjectId;
   lineage: Types.ObjectId[];
+  productCount: number;
 }
 
 export interface CategoryDocument extends MongooseCategory, Document {}
@@ -30,6 +31,7 @@ const schema = new mongoose.Schema<CategoryDocument>(
         ref: "Category",
       },
     ],
+    productCount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

@@ -7,7 +7,7 @@ const validMongoId = (val: string) => {
   return Types.ObjectId.isValid(val);
 };
 
-export const zodProductFilter = z.object({
+export const zodBaseFilter = z.object({
   minPrice: z.coerce.number().nonnegative().int().optional(),
   maxPrice: z.coerce.number().nonnegative().int().optional(),
   search: z.string().trim().optional(),
@@ -18,6 +18,10 @@ export const zodProductFilter = z.object({
       return validMongoId(val);
     })
     .optional(),
+});
+
+export const zodProductFilter = z.object({
+  ...zodBaseFilter.shape,
   sortType: z
     .enum(["", "newest", "oldest", "priceAsc", "priceDesc", "nameAZ", "nameZA"])
     .optional(),
@@ -25,7 +29,12 @@ export const zodProductFilter = z.object({
   currentPage: z.coerce.number().min(1).default(1).optional(),
 });
 
+export const zodSidebarFilter = z.object({
+  ...zodBaseFilter.shape,
+});
+
 export type ProductFilter = z.infer<typeof zodProductFilter>;
+export type SidebarFilter = z.infer<typeof zodSidebarFilter>;
 
 export const zodFilterInitial = z.object({
   tagName: z.string().max(125),
@@ -131,6 +140,10 @@ export interface RequestWithFilter extends Request {
   productFilter?: FilterQuery<ProductDocument>;
   sortingType?: string;
   pagingObject?: PageObject;
+}
+
+export interface RequestWithSidebarFilter extends Request {
+  productFilter?: FilterQuery<ProductDocument>;
 }
 
 export const UpdateCategoryZodSchema = z.string();

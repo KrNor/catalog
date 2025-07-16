@@ -18,6 +18,13 @@ interface CategoryToSave {
   parent?: string;
 }
 
+interface SimplifiedProductsWithPaginationMeta {
+  data: SimplifiedProduct[];
+  currentPage: number;
+  productCount: number;
+  resultsPerPage: number;
+}
+
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -26,12 +33,12 @@ export const api = createApi({
   }),
   tagTypes: ["Product", "User", "Category", "Tag"],
   endpoints: (build) => ({
-    getProducts: build.query<SimplifiedProduct[], string>({
+    getProducts: build.query<SimplifiedProductsWithPaginationMeta, string>({
       query: (queryString) => ({ url: `product?${queryString}` }),
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ id }) => ({
+              ...result.data.map(({ id }) => ({
                 type: "Product" as const,
                 id,
               })),

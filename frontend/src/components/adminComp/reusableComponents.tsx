@@ -94,7 +94,7 @@ const CategorySelectChild = ({
   );
 };
 
-const CategorySelectLineage = ({
+export const CategorySelectLineage = ({
   onChange,
   lineage,
 }: CategorySelectLineageProps) => {

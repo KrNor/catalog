@@ -66,25 +66,9 @@ const SearchFilters = () => {
           </Col>
         </Row>
       </InputGroup>
-      <Form.Label>Include only currently availiable</Form.Label>
-      <Form.Check type="switch" {...register("availability")} />
-      <Form.Select {...register("sortType")}>
-        <option value="">Sort by:</option>
-        <option value="newest">Newest first</option>
-        <option value="oldest">Oldest first</option>
-        <option value="priceAsc">Increasing Price </option>
-        <option value="priceDesc">Decreasing Price</option>
-        <option value="nameAZ">A to Z</option>
-        <option value="nameZA">Z to A</option>
-      </Form.Select>
-      <Form.Select {...register("resultsPerPage")}>
-        <option value="">60 (default)</option>
-        <option value="20">20</option>
-        <option value="40">40</option>
-        <option value="60">60</option>
-        <option value="120">120</option>
-        <option value="200">200</option>
-      </Form.Select>
+      {/* <Form.Label>Include only currently availiable</Form.Label> */}
+      {/* <Form.Check type="switch" {...register("availability")} /> */}
+      <div>adding tag filters here</div>
       <Button type="submit">Search</Button>
     </Form>
   );

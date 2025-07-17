@@ -25,6 +25,17 @@ interface SimplifiedProductsWithPaginationMeta {
   resultsPerPage: number;
 }
 
+interface TagAttributeFromDb {
+  tagAttribute: string;
+  count: number;
+}
+
+interface TagWithCountFromDb {
+  count: number;
+  tagName: string;
+  attributes: TagAttributeFromDb[];
+}
+
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -33,6 +44,10 @@ export const api = createApi({
   }),
   tagTypes: ["Product", "User", "Category", "Tag"],
   endpoints: (build) => ({
+    getFilteredTags: build.query<TagWithCountFromDb[], string>({
+      query: (queryString) => ({ url: `filter/sidebar/?${queryString}` }),
+      providesTags: [{ type: "Tag", id: "LIST" }],
+    }),
     getProducts: build.query<SimplifiedProductsWithPaginationMeta, string>({
       query: (queryString) => ({ url: `product?${queryString}` }),
       providesTags: (result) =>
@@ -211,5 +226,6 @@ export const {
   useCreateTagMutation,
   useEditProductMutation,
   useDeleteProductMutation,
+  useGetFilteredTagsQuery,
 } = api;
 export default api.reducer;

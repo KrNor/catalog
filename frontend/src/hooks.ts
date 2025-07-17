@@ -1,7 +1,5 @@
 import Cookies from "js-cookie";
 import { useDispatch, useSelector, useStore } from "react-redux";
-// import { useSearchParams } from "react-router-dom";
-import { useState } from "react";
 
 import type { AppDispatch, AppStore, RootState, LoginDetails } from "./types";
 import {
@@ -10,29 +8,23 @@ import {
   useLoginUserMutation,
   useLogoutUserMutation,
   useGetCategoryFamilyQuery,
-  // useGetCategoryByIdQuery,
 } from "./reducers/apiReducer";
 
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 export const useAppSelector = useSelector.withTypes<RootState>();
 export const useAppStore = useStore.withTypes<AppStore>();
 
-export const CategoryHook = (localCategory: string | undefined) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [currentCategory, _setCurrentCategory] = useState<string | undefined>(
-    localCategory
-  );
-
+export const BaseCategoryHook = () => {
   const {
-    data: lineage,
-    isLoading,
-    error,
-  } = useGetCategoryFamilyQuery(currentCategory); //categoryInParams   currentCategory
+    data: baseCatFam,
+    isLoading: baseCatFamLoading,
+    error: baseCatFamError,
+  } = useGetCategoryFamilyQuery(undefined);
 
   return {
-    lineage,
-    isLoading,
-    error,
+    baseCatFam,
+    baseCatFamLoading,
+    baseCatFamError,
   };
 };
 

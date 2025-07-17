@@ -40,6 +40,7 @@ export interface LoginDetails {
 export interface CategoryToReturn {
   id: string;
   name: string;
+  productCount: number;
 }
 export interface CategoryFamilyObject {
   lineage: CategoryToReturn[];

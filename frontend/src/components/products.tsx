@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import {
   useGetProductsQuery,
   useGetCategoryFamilyQuery,
+  useGetFilteredTagsQuery,
 } from "../reducers/apiReducer";
 import type { SimplifiedProduct } from "../types";
 
@@ -40,7 +41,6 @@ const SingleProduct = ({ product }: SingleProductProps) => {
     </Card>
   );
 };
-import { CategorySelectLineage } from "./adminComp/reusableComponents";
 
 interface CategoryInfoAndSortingProps {
   categoryName: string;
@@ -89,14 +89,10 @@ const ProductPagination = ({
   onChange,
   setCurrentPage,
 }: ProductPaginationProps) => {
-  console.log(resultsPerPage);
-  console.log(productCount);
-  console.log(currentPage);
-
   const [pageCount, setPageCount] = useState<number>(
     Math.ceil(productCount / resultsPerPage)
   );
-  console.log(pageCount + " of pages are total ");
+  // console.log(pageCount + " of pages are total ");
 
   useEffect(() => {
     setPageCount(Math.ceil(productCount / resultsPerPage));
@@ -191,35 +187,31 @@ const Products = () => {
 
   const { data, error, isLoading } = useGetProductsQuery(queryString);
 
+  const {
+    data: tagData,
+    error: tagError,
+    isLoading: tagLoading,
+  } = useGetFilteredTagsQuery(queryString);
+
   const categoryy = searchParams.get("category");
-  console.log(searchParams);
+  // console.log(searchParams);
   const {
     data: lineage,
     isError: categoryError,
     isLoading: categoryLoading,
   } = useGetCategoryFamilyQuery(categoryy || undefined);
-  if (isLoading || categoryLoading || !lineage) {
+
+  if (isLoading || categoryLoading || !lineage || tagLoading) {
     return <Spinner animation="border" />;
   }
 
-  if (error || categoryError) {
+  if (error || categoryError || tagError) {
     return (
       <Alert variant="danger">
         error occured when getting products, try again later.
       </Alert>
     );
   }
-
-  const setCurrentCategory = (id: string) => {
-    if (id === "") {
-      searchParams.delete("category");
-    } else {
-      searchParams.set("category", id);
-    }
-
-    navigate(`/products?${searchParams.toString()}`);
-  };
-
   const setCurrentPage = (currentPage: string) => {
     if (currentPage === "") {
       searchParams.delete("currentPage");
@@ -250,6 +242,8 @@ const Products = () => {
     navigate(`/products?${searchParams.toString()}`);
   };
 
+  console.log(tagData);
+
   if (data) {
     return (
       <Container>
@@ -259,12 +253,13 @@ const Products = () => {
           </Col>
           <Col sm={10}>
             <Container>
-              <Row>
+              {/* not using here for now */}
+              {/* <Row>
                 <CategorySelectLineage
                   onChange={setCurrentCategory}
                   lineage={lineage}
                 />
-              </Row>
+              </Row> */}
               <Row>
                 <CategoryInfoAndSorting
                   categoryName={

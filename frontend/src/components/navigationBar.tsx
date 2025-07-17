@@ -7,11 +7,13 @@ import {
   Spinner,
   Container,
   Nav,
+  Dropdown,
+  NavDropdown,
 } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // useSearchParams
 import { useState } from "react";
 
-import { AuthHook } from "../hooks";
+import { AuthHook, BaseCategoryHook } from "../hooks";
 
 const NavBarSearch = () => {
   const navigate = useNavigate();
@@ -19,8 +21,14 @@ const NavBarSearch = () => {
 
   const navBarSearch = () => {
     const query = new URLSearchParams();
-    query.set("search", navSearchMessage as string);
+
+    if (navSearchMessage === "") {
+      query.delete("search");
+    } else {
+      query.set("search", navSearchMessage);
+    }
     navigate(`/products?${query.toString()}`);
+    window.location.reload();
   };
   return (
     <Form action={navBarSearch}>
@@ -43,13 +51,18 @@ const NavBarSearch = () => {
 };
 
 const NavigationBar = () => {
-  const { user, isLoading, error, logout } = AuthHook();
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
-  if (isLoading) {
+  const { user, isLoading, error, logout } = AuthHook();
+  const { baseCatFam, baseCatFamLoading, baseCatFamError } = BaseCategoryHook();
+
+  const navigate = useNavigate();
+
+  if (isLoading || baseCatFamLoading) {
     return <Spinner animation="border" />;
   }
 
-  if (error) {
+  if (error || baseCatFamError) {
     return (
       <Alert variant="danger">
         error occured when getting products, try again later.
@@ -57,6 +70,26 @@ const NavigationBar = () => {
     );
   }
 
+  const handleMouseEnter = () => {
+    setShowDropdown(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowDropdown(false);
+  };
+
+  const setCurrentCategory = (id: string | null) => {
+    const query = new URLSearchParams();
+    if (id !== null) {
+      if (id === "") {
+        query.delete("category");
+      } else {
+        query.set("category", id);
+      }
+    }
+    navigate(`/products?${query.toString()}`);
+    // window.location.reload();
+  };
   return (
     <Container>
       <Navbar className="bg-body-tertiary">
@@ -64,7 +97,22 @@ const NavigationBar = () => {
           <Link to="/">Catalog</Link>
         </Navbar.Brand>
         <Nav className="me-auto">
-          <Link to="/products">products</Link>
+          <NavDropdown
+            title="Products"
+            onSelect={(categg) => setCurrentCategory(categg)}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            show={showDropdown}
+          >
+            <Dropdown.Item key={"default" + "navbarcat"} eventKey={""}>
+              All
+            </Dropdown.Item>
+            {baseCatFam?.imediateChildren.map((categ) => (
+              <Dropdown.Item key={categ.id + "navbarcat"} eventKey={categ.id}>
+                {categ.name}
+              </Dropdown.Item>
+            ))}
+          </NavDropdown>
         </Nav>
         {!user ? <Link to="/login">login</Link> : <></>}
         <Nav className="justify-content-end">

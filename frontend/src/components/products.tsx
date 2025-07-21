@@ -16,7 +16,6 @@ import { useEffect, useState } from "react";
 import {
   useGetProductsQuery,
   useGetCategoryFamilyQuery,
-  useGetFilteredTagsQuery,
 } from "../reducers/apiReducer";
 import type { SimplifiedProduct } from "../types";
 
@@ -58,7 +57,7 @@ const CategoryInfoAndSorting = ({
       <Navbar>
         <Row>
           <Col>{categoryName}</Col>
-          <Col>total products in category:{productCount}</Col>
+          <Col>total products found:{productCount}</Col>
           <Col>
             <Form.Select onChange={(e) => onChange(e.target.value)}>
               <option value="">Sort by:</option>
@@ -187,12 +186,6 @@ const Products = () => {
 
   const { data, error, isLoading } = useGetProductsQuery(queryString);
 
-  const {
-    data: tagData,
-    error: tagError,
-    isLoading: tagLoading,
-  } = useGetFilteredTagsQuery(queryString);
-
   const categoryy = searchParams.get("category");
   // console.log(searchParams);
   const {
@@ -201,11 +194,11 @@ const Products = () => {
     isLoading: categoryLoading,
   } = useGetCategoryFamilyQuery(categoryy || undefined);
 
-  if (isLoading || categoryLoading || !lineage || tagLoading) {
+  if (isLoading || categoryLoading || !lineage) {
     return <Spinner animation="border" />;
   }
 
-  if (error || categoryError || tagError) {
+  if (error || categoryError) {
     return (
       <Alert variant="danger">
         error occured when getting products, try again later.
@@ -241,8 +234,6 @@ const Products = () => {
     }
     navigate(`/products?${searchParams.toString()}`);
   };
-
-  console.log(tagData);
 
   if (data) {
     return (

@@ -55,3 +55,27 @@ export interface FullCategoryObject {
   lineage: string[];
   id: string;
 }
+
+export interface CategoryToSave {
+  name: string;
+  description: string;
+  parent?: string;
+}
+
+export interface SimplifiedProductsWithPaginationMeta {
+  data: SimplifiedProduct[];
+  currentPage: number;
+  productCount: number;
+  resultsPerPage: number;
+}
+
+export interface TagAttributeFromDb {
+  tagAttribute: string;
+  count: number;
+}
+
+export interface TagWithCountFromDb {
+  count: number;
+  tagName: string;
+  attributes: TagAttributeFromDb[];
+}

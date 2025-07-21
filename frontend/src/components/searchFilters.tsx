@@ -1,161 +1,124 @@
-import {
-  Form,
-  InputGroup,
-  Button,
-  Col,
-  Row,
-  Spinner,
-  Alert,
-  ListGroup,
-} from "react-bootstrap";
+import { Form, InputGroup, Button, Col, Row } from "react-bootstrap";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useGetCategoryFamilyQuery } from "../reducers/apiReducer";
 import { searchSchema, type SearchSchemaType } from "../validation";
-import { BaseCategoryHook } from "../hooks";
-import type { CategoryToReturn } from "../types";
-
-interface SidebarCategoriesProps {
-  onChange: (value: string) => void;
-}
-
-export const SidebarCategories = ({ onChange }: SidebarCategoriesProps) => {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-
-  const [curentLineage, setCurentCategoryLineage] = useState<
-    Array<CategoryToReturn> | undefined
-  >(undefined);
-
-  const categoryy = searchParams.get("category");
-
-  const { baseCatFam, baseCatFamLoading, baseCatFamError } = BaseCategoryHook();
-
-  const {
-    data: currentCategoryFamily,
-    error,
-    isLoading,
-  } = useGetCategoryFamilyQuery(categoryy || undefined);
-
-  useEffect(() => {
-    if (currentCategoryFamily) {
-      setCurentCategoryLineage(
-        currentCategoryFamily.lineage.concat(currentCategoryFamily.category)
-      );
-    } else {
-      setCurentCategoryLineage(undefined);
-    }
-  }, [searchParams, currentCategoryFamily]);
-
-  if (error || baseCatFamError) {
-    return (
-      <Alert variant="danger">
-        error occured when getting categories, try again later.
-      </Alert>
-    );
-  }
-
-  if (isLoading || baseCatFamLoading) {
-    return <Spinner animation="border" />;
-  }
-
-  const setCurrentCategory = (id: string | null) => {
-    if (id !== null) {
-      searchParams.set("category", id);
-    }
-    if (id === "") {
-      searchParams.delete("category");
-    }
-    onChange(id as string);
-    navigate(`/products?${searchParams.toString()}`);
-  };
-
-  return (
-    <ListGroup onSelect={(categg) => setCurrentCategory(categg)}>
-      <ListGroup.Item eventKey={""} key={"allcatselect"}>
-        All Categories
-      </ListGroup.Item>
-      {baseCatFam && currentCategoryFamily ? (
-        baseCatFam.imediateChildren.map((baseCat) => {
-          if (
-            curentLineage &&
-            curentLineage[0] &&
-            baseCat.id === curentLineage[0].id
-          ) {
-            const temp1 = curentLineage.map((e) => (
-              <ListGroup.Item eventKey={e.id} key={e.id + "activ"}>
-                {">"}
-                {e.name}
-              </ListGroup.Item>
-            ));
-
-            const temp2 = currentCategoryFamily.imediateChildren.map((e) => (
-              <ListGroup.Item eventKey={e.id} key={e.id + "children"}>
-                {e.name}
-              </ListGroup.Item>
-            ));
-
-            return temp1.concat(temp2);
-          } else {
-            return (
-              <ListGroup.Item
-                eventKey={baseCat.id}
-                key={baseCat.id + "inactive"}
-              >
-                {baseCat.name}
-              </ListGroup.Item>
-            );
-          }
-        })
-      ) : (
-        <Spinner animation="border" />
-      )}
-    </ListGroup>
-  );
-};
+import { GetTagsFromUrl } from "./reusableFunctions";
+import SidebarCategories from "./sidebarCategories";
+import SidebarTags from "./sidebarTags";
 
 const SearchFilters = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const { register, control, handleSubmit } = useForm<SearchSchemaType>({
-    resolver: zodResolver(searchSchema),
-    defaultValues: {
-      minPrice: searchParams.get("minPrice")
-        ? Number(searchParams.get("minPrice"))
-        : "",
-      maxPrice: searchParams.get("maxPrice")
-        ? Number(searchParams.get("maxPrice"))
-        : "",
-      search: searchParams.get("search") || "",
-      availability: searchParams.get("availability")
-        ? Number(searchParams.get("availability"))
-        : "",
-      category: searchParams.get("category") || "",
-      sortType: searchParams.get("sortType") || "",
-      resultsPerPage: searchParams.get("resultsPerPage")
-        ? Number(searchParams.get("resultsPerPage"))
-        : 60,
-      currentPage: searchParams.get("currentPage")
-        ? Number(searchParams.get("currentPage"))
-        : 1,
-    },
-  });
+  const {
+    register,
+    control,
+    setValue,
+    getValues,
+    handleSubmit,
+  } = // watch
+    useForm<SearchSchemaType>({
+      resolver: zodResolver(searchSchema),
+      defaultValues: {
+        minPrice: searchParams.get("minPrice")
+          ? Number(searchParams.get("minPrice"))
+          : "",
+        maxPrice: searchParams.get("maxPrice")
+          ? Number(searchParams.get("maxPrice"))
+          : "",
+        search: searchParams.get("search") || "",
+        availability: searchParams.get("availability")
+          ? Number(searchParams.get("availability"))
+          : "",
+        category: searchParams.get("category") || "",
+        sortType: searchParams.get("sortType") || "",
+        resultsPerPage: searchParams.get("resultsPerPage")
+          ? Number(searchParams.get("resultsPerPage"))
+          : 60,
+        currentPage: searchParams.get("currentPage")
+          ? Number(searchParams.get("currentPage"))
+          : 1,
+        tags: {},
+      },
+    });
+
+  useEffect(() => {
+    const tagsFromUrl = GetTagsFromUrl(searchParams);
+
+    setValue("tags", tagsFromUrl.tags);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // console.log(watch());
+  // console.log(searchParams.get("tags"));
 
   const onSubmit = (data: SearchSchemaType) => {
     const query = new URLSearchParams();
 
     Object.entries(data).forEach(([key, value]) => {
-      if (value) {
+      if (key === "tags") {
+        Object.entries(value).forEach(([tagName, tagAttributes]) => {
+          for (const tagAttribute of tagAttributes) {
+            if (tagAttribute) {
+              query.append(`tags.${tagName}`, tagAttribute);
+            }
+          }
+        });
+      } else if (value) {
         query.set(key, value as string);
       }
     });
 
     navigate(`/products?${query.toString()}`);
   };
+
+  const handleClickTag = (
+    tagNameToChange: string,
+    tagAttributeToChange: string
+  ) => {
+    const currentTags = getValues("tags");
+
+    if (currentTags) {
+      if (currentTags[tagNameToChange]) {
+        if (currentTags[tagNameToChange].includes(tagAttributeToChange)) {
+          const updatedTagList = currentTags[tagNameToChange].filter(
+            (attr) => attr !== tagAttributeToChange
+          );
+          const updatedTags = {
+            ...currentTags,
+            [tagNameToChange]: updatedTagList,
+          };
+
+          if (updatedTagList.length === 0) {
+            delete updatedTags[tagNameToChange];
+          }
+
+          setValue("tags", updatedTags, { shouldDirty: true });
+        } else {
+          const updatedTags = {
+            ...currentTags,
+            [tagNameToChange]: [
+              ...currentTags[tagNameToChange],
+              tagAttributeToChange,
+            ],
+          };
+          setValue("tags", updatedTags, { shouldDirty: true });
+        }
+      } else {
+        const updatedTags = {
+          ...currentTags,
+          [tagNameToChange]: [tagAttributeToChange],
+        };
+        setValue("tags", updatedTags, { shouldDirty: true });
+      }
+    }
+  };
+
+  // console.log(TagStringToObject(""));
+  // console.log(TagObjectToSring({}));
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
@@ -187,9 +150,17 @@ const SearchFilters = () => {
           </Col>
         </Row>
       </InputGroup>
-      {/* <Form.Label>Include only currently availiable</Form.Label> */}
       {/* <Form.Check type="switch" {...register("availability")} /> */}
-      <div>adding tag filters here</div>
+      <Controller
+        name="tags"
+        control={control}
+        render={({ field }) => (
+          <SidebarTags
+            selectedTags={field.value ? field.value : {}}
+            tagClick={handleClickTag}
+          />
+        )}
+      />
       <Button type="submit">Search</Button>
     </Form>
   );

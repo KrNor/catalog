@@ -2,17 +2,6 @@ import { z } from "zod";
 
 // const mongoRegex = /^[a-f\d]{24}$/i; .regex(mongoRegex, "Invalid category id") (in case I try validating using regex again)
 
-export const searchSchema = z.object({
-  minPrice: z.union([z.coerce.number().min(0), z.literal("")]).optional(),
-  maxPrice: z.union([z.coerce.number().min(0), z.literal("")]).optional(),
-  search: z.string().optional(),
-  availability: z.union([z.coerce.number().gte(-4), z.literal("")]).optional(),
-  category: z.string().optional(),
-  sortType: z.string().optional(),
-  resultsPerPage: z.coerce.number().min(1).max(200).default(60).optional(),
-  currentPage: z.coerce.number().min(1).default(1).optional(),
-});
-
 export const createCategorySchema = z.object({
   name: z.string().min(3).max(125),
   description: z.string().min(3).max(255),
@@ -57,6 +46,23 @@ export const productSchema = z.object({
   tags: z.array(tagInsideProductSchema),
 });
 
+export const tagInSearchSchema = z.object({
+  tags: z.record(z.string(), z.array(z.string())),
+});
+
+export const searchSchema = z.object({
+  tags: z.record(z.string(), z.array(z.string())).optional(),
+  minPrice: z.union([z.coerce.number().min(0), z.literal("")]).optional(),
+  maxPrice: z.union([z.coerce.number().min(0), z.literal("")]).optional(),
+  search: z.string().optional(),
+  availability: z.union([z.coerce.number().gte(-4), z.literal("")]).optional(),
+  category: z.string().optional(),
+  sortType: z.string().optional(),
+  resultsPerPage: z.coerce.number().min(1).max(200).default(60).optional(),
+  currentPage: z.coerce.number().min(1).default(1).optional(),
+});
+
+export type TagInSearchSchemaType = z.infer<typeof tagInSearchSchema>;
 export type SearchSchemaType = z.infer<typeof searchSchema>;
 export type ProductSchemaType = z.infer<typeof productSchema>;
 export type CategorySchemaType = z.infer<typeof createCategorySchema>;

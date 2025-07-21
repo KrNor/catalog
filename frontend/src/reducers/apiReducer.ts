@@ -2,39 +2,17 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 import type {
   Product,
-  SimplifiedProduct,
   UserObject,
   LoginDetails,
   CategoryFamilyObject,
   FullCategoryObject,
   TagToSave,
+  CategoryToSave,
+  SimplifiedProductsWithPaginationMeta,
+  TagWithCountFromDb,
 } from "../types";
 
 import type { TagWithIdSchemaType, ProductSchemaType } from "../validation";
-
-interface CategoryToSave {
-  name: string;
-  description: string;
-  parent?: string;
-}
-
-interface SimplifiedProductsWithPaginationMeta {
-  data: SimplifiedProduct[];
-  currentPage: number;
-  productCount: number;
-  resultsPerPage: number;
-}
-
-interface TagAttributeFromDb {
-  tagAttribute: string;
-  count: number;
-}
-
-interface TagWithCountFromDb {
-  count: number;
-  tagName: string;
-  attributes: TagAttributeFromDb[];
-}
 
 export const api = createApi({
   reducerPath: "api",

@@ -4,8 +4,15 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import mongoose from "mongoose";
+import qs from "qs";
 
 const app = express();
+
+app.set("query parser", (str: string) =>
+  qs.parse(str, {
+    allowDots: true,
+  })
+);
 
 // origin: process.env.FRONTEND_URL || "http://localhost:5173", // for security so that only the frontend can make the requests
 app.use(

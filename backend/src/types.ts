@@ -27,6 +27,9 @@ export const zodProductFilter = z.object({
     .optional(),
   resultsPerPage: z.coerce.number().max(200).default(60).optional(),
   currentPage: z.coerce.number().min(1).default(1).optional(),
+  tags: z
+    .record(z.string(), z.union([z.string(), z.array(z.string())]))
+    .optional(),
 });
 
 export const zodSidebarFilter = z.object({

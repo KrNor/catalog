@@ -39,10 +39,34 @@ export const parseQueryAdvanced = (
     sortType,
     currentPage,
     resultsPerPage,
+    tags,
   } = parseResult.data;
 
   const filterToPass: FilterQuery<ProductDocument> = {};
 
+  //tags
+  if (tags) {
+    const selectedTags: FilterQuery<ProductDocument>[] = [];
+    for (const [tagName, tagAttributes] of Object.entries(tags)) {
+      const tagArray = Array.isArray(tagAttributes)
+        ? tagAttributes
+        : [tagAttributes];
+
+      selectedTags.push({
+        tags: {
+          $elemMatch: {
+            tagName: tagName,
+            tagAttribute: { $in: tagArray },
+          },
+        },
+      });
+    }
+    // console.dir(selectedTags, { depth: null });
+
+    filterToPass.$and = selectedTags;
+  }
+
+  // other filter options
   if (minPrice !== undefined || maxPrice !== undefined) {
     filterToPass.price = {};
     if (minPrice !== undefined) filterToPass.price.$gte = minPrice;
@@ -64,10 +88,6 @@ export const parseQueryAdvanced = (
   }
 
   req.productFilter = filterToPass;
-
-  // console.log(filterToPass);
-
-  // sorting
 
   let sortingTypeResult = "";
   if (sortType) {
@@ -110,6 +130,7 @@ export const parseQueryAdvanced = (
       resultsPerPage: 60,
     };
   }
+
   next();
 };
 

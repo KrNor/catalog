@@ -131,10 +131,6 @@ export const getFilteredSimplifiedProducts = async (
         skip: 0,
         limit: 60,
       };
-  // console.log(pagingObject);
-  // if (sortingType) {
-  //   console.log(sortObjectReturner(sortingType));
-  // }
   if (filter && "category" in filter) {
     if (sortingType) {
       const listOfCategories = await getCategoryListUnique(filter.category);

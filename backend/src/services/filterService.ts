@@ -2,6 +2,7 @@ import { FilterQuery, Types, PipelineStage } from "mongoose";
 
 import Product from "../models/product";
 import { ProductDocument } from "../models/product";
+import { getCategoryListUnique } from "./categoryService";
 
 interface TagAttributeToReturn {
   tagAttribute: string;
@@ -18,10 +19,22 @@ export const getFilteredTagsWithCount = async (
   filterObj: FilterQuery<ProductDocument>
 ) => {
   if (typeof filterObj.category === "string") {
-    filterObj.category = new Types.ObjectId(filterObj.category);
+    const categoriesToFilter = await getCategoryListUnique(filterObj.category);
+
+    const categoryListWithIdObjects = categoriesToFilter.map((category) => {
+      return new Types.ObjectId(category);
+    });
+
+    // console.log(categoryListWithIdObjects);
+
+    filterObj.category = {
+      $in: categoryListWithIdObjects,
+    };
   }
 
   // console.log(filterObj);
+
+  // console.log(first)
 
   const pipeline: PipelineStage[] = [
     {
@@ -54,12 +67,12 @@ export const getFilteredTagsWithCount = async (
         attributes: {
           $sortArray: {
             input: "$attributes",
-            sortBy: { count: -1 },
+            sortBy: { count: -1, tagAttribute: 1 },
           },
         },
       },
     },
-    { $sort: { count: -1 } },
+    { $sort: { count: -1, _id: 1 } },
     {
       $set: {
         tagName: "$_id",
@@ -69,5 +82,6 @@ export const getFilteredTagsWithCount = async (
   ];
 
   const result: TagWithCountToReturn[] = await Product.aggregate(pipeline);
+  // console.log(result);
   return result;
 };

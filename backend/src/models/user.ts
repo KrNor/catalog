@@ -26,7 +26,8 @@ const schema = new mongoose.Schema<UserDocument>({
 });
 
 schema.set("toJSON", {
-  transform: (_document, returnedObject) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transform: (_document, returnedObject: any) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;

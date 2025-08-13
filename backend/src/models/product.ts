@@ -69,8 +69,26 @@ const schema = new mongoose.Schema<ProductDocument>(
   { timestamps: true }
 );
 
+// schema.set("toJSON", {
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   transform: (_document, returnedObject: any) => {
+//     const {
+//       _id,
+//       __v: _v,
+//       createdAt: _createdAt,
+//       updatedAt: _updatedAt,
+//       ...rest
+//     } = returnedObject;
+//     return {
+//       id: String(_id),
+//       ...rest,
+//     };
+//   },
+// });
+
 schema.set("toJSON", {
-  transform: (_document, returnedObject) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transform: (_document, returnedObject: any) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;

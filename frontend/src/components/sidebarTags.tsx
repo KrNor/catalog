@@ -1,8 +1,9 @@
-import { Spinner, Alert, FormCheck } from "react-bootstrap";
+import { Spinner, Alert, FormCheck, Button } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useGetFilteredTagsQuery } from "../reducers/apiReducer";
+import { GetTagsFromUrl } from "./reusableFunctions";
 
 interface SidebarTagProps {
   selectedTags: Record<string, string[]>;
@@ -10,8 +11,7 @@ interface SidebarTagProps {
 }
 
 const SidebarTags = ({ selectedTags, tagClick }: SidebarTagProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [tagSideLength, _setTagSideLength] = useState<number>(20); // temp
+  const [tagSideLength, setTagSideLength] = useState<number>(5);
 
   const [searchParams] = useSearchParams();
 
@@ -22,6 +22,13 @@ const SidebarTags = ({ selectedTags, tagClick }: SidebarTagProps) => {
     error: tagError,
     isLoading: tagLoading,
   } = useGetFilteredTagsQuery(queryString);
+
+  const [initialTags, setInitialTags] = useState<Record<string, string[]>>();
+
+  useEffect(() => {
+    const temp111 = GetTagsFromUrl(searchParams);
+    setInitialTags(temp111.tags);
+  }, [searchParams]);
 
   if (tagLoading) {
     return <Spinner animation="border" />;
@@ -34,22 +41,24 @@ const SidebarTags = ({ selectedTags, tagClick }: SidebarTagProps) => {
       </Alert>
     );
   }
-  //   console.log("this is selected tags");
-  //   console.log(selectedTags);
 
   const onTagSelect = (tag: string, tagAtt: string) => {
     tagClick(tag, tagAtt);
   };
 
+  const increaseTagAmmount = () => {
+    setTagSideLength(tagSideLength + 5);
+  };
+
   return (
     <div>
-      {tagData ? (
+      {tagData && initialTags ? (
         tagData.map((tag, tagIndex) => {
-          if (tagIndex < tagSideLength) {
+          if (tag.tagName in initialTags) {
             return (
-              <fieldset key={`${tag.tagName}`}>
+              <fieldset key={`${tag.tagName}tag${tagIndex}`}>
                 <div key={`${tag.tagName}tagname`}>
-                  {">"}
+                  {">>>"}
                   {tag.tagName}:{tag.count}
                 </div>
                 <div key={`tagattributetemp`}>
@@ -60,7 +69,7 @@ const SidebarTags = ({ selectedTags, tagClick }: SidebarTagProps) => {
                           onChange={() =>
                             onTagSelect(tag.tagName, tagAtt.tagAttribute)
                           }
-                          defaultChecked={
+                          checked={
                             Object.prototype.hasOwnProperty.call(
                               selectedTags,
                               tag.tagName
@@ -86,6 +95,40 @@ const SidebarTags = ({ selectedTags, tagClick }: SidebarTagProps) => {
       ) : (
         <div>loading</div>
       )}
+      {tagData && initialTags ? (
+        tagData.map((tag, tagIndex) => {
+          if (tagIndex < tagSideLength && !(tag.tagName in initialTags)) {
+            return (
+              <fieldset key={`${tag.tagName}`}>
+                <div key={`${tag.tagName}tagname`}>
+                  {">"}
+                  {tag.tagName}:{tag.count}
+                </div>
+                <div key={`tagattributetemp`}>
+                  {tag.attributes.map((tagAtt) => {
+                    return (
+                      <FormCheck key={`${tagAtt.tagAttribute}`}>
+                        <FormCheck.Input
+                          onChange={() =>
+                            onTagSelect(tag.tagName, tagAtt.tagAttribute)
+                          }
+                          type="checkbox"
+                        ></FormCheck.Input>
+                        <FormCheck.Label>
+                          {tagAtt.tagAttribute}:{tagAtt.count}
+                        </FormCheck.Label>
+                      </FormCheck>
+                    );
+                  })}
+                </div>
+              </fieldset>
+            );
+          }
+        })
+      ) : (
+        <div>loading</div>
+      )}
+      <Button onClick={() => increaseTagAmmount()}>show more tags</Button>
     </div>
   );
 };

@@ -1,17 +1,15 @@
 import { Spinner, Alert, ListGroup } from "react-bootstrap";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom"; //
 import { useState, useEffect } from "react";
 import { useGetCategoryFamilyQuery } from "../reducers/apiReducer";
 import { BaseCategoryHook } from "../hooks";
 import type { CategoryToReturn } from "../types";
+import { useFormContext } from "react-hook-form";
 
-interface SidebarCategoriesProps {
-  onChange: (value: string) => void;
-}
-
-const SidebarCategories = ({ onChange }: SidebarCategoriesProps) => {
+const SidebarCategories = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { reset, getValues } = useFormContext();
 
   const [curentLineage, setCurentCategoryLineage] = useState<
     Array<CategoryToReturn> | undefined
@@ -50,14 +48,39 @@ const SidebarCategories = ({ onChange }: SidebarCategoriesProps) => {
   }
 
   const setCurrentCategory = (id: string | null) => {
+    const newParams = new URLSearchParams();
     if (id !== null) {
-      searchParams.set("category", id);
+      newParams.set("category", id);
     }
+    if (searchParams.get("sortType") !== null) {
+      newParams.set("sortType", searchParams.get("sortType") as string);
+    }
+    if (searchParams.get("resultsPerPage") !== null) {
+      newParams.set(
+        "resultsPerPage",
+        searchParams.get("resultsPerPage") as string
+      );
+    }
+
     if (id === "") {
-      searchParams.delete("category");
+      newParams.delete("category");
     }
-    onChange(id as string);
-    navigate(`/products?${searchParams.toString()}`);
+    reset({
+      category:
+        typeof newParams.get("category") === "string"
+          ? (newParams.get("category") as string)
+          : "",
+      sortType: getValues("sortType"),
+      resultsPerPage: getValues("resultsPerPage"),
+      minPrice: "",
+      maxPrice: "",
+      search: "",
+      availability: "",
+      currentPage: 1,
+      tags: {},
+    });
+
+    navigate(`/products?${newParams.toString()}`);
   };
 
   return (

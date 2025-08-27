@@ -1,13 +1,13 @@
 
-# Car product catalog
+# Product catalog
  
 
-A full-stack project that displays a catalog of car related products. (Under construction) Primarily written using Typescript.
+A full-stack project that displays a catalog of products. (Under construction) Primarily written using Typescript.
 
 
 ## Roadmap
 
-- Expanding search functionality.
+- ~~Expanding search functionality.~~
 
 - Adding pictures to categories and products.
 

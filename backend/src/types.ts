@@ -150,3 +150,14 @@ export interface RequestWithSidebarFilter extends Request {
 }
 
 export const UpdateCategoryZodSchema = z.string();
+
+export const zodCloudinaryOptions = z.object({
+  timestamp: z.coerce.number().nonnegative(),
+  source: z.string().trim(),
+});
+
+export type CloudinaryOptionsType = z.infer<typeof zodCloudinaryOptions>;
+
+export interface RequestWithCloudinaryOptions extends Request {
+  cloudinaryOptions?: CloudinaryOptionsType;
+}

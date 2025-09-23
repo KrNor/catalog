@@ -81,8 +81,6 @@ export const genericErrorMiddleware = (
   error: unknown,
   _req: Request,
   res: Response,
-  // do not remove _next
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction
 ) => {
   if (error instanceof Error) {

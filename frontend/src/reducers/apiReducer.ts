@@ -10,6 +10,7 @@ import type {
   CategoryToSave,
   SimplifiedProductsWithPaginationMeta,
   TagWithCountFromDb,
+  ImageUploadInfo,
 } from "../types";
 
 import type { TagWithIdSchemaType, ProductSchemaType } from "../validation";
@@ -20,7 +21,7 @@ export const api = createApi({
     baseUrl: "http://localhost:3000/api/",
     credentials: "include",
   }),
-  tagTypes: ["Product", "User", "Category", "Tag"],
+  tagTypes: ["Product", "User", "Category", "Tag", "ImageInfo"],
   endpoints: (build) => ({
     getFilteredTags: build.query<TagWithCountFromDb[], string>({
       query: (queryString) => ({ url: `filter/sidebar/?${queryString}` }),
@@ -184,9 +185,12 @@ export const api = createApi({
         "Product",
       ],
     }),
+    getImageInfo: build.query<ImageUploadInfo, void>({
+      query: () => `image/info`,
+      providesTags: () => [{ type: "ImageInfo" }],
+    }),
   }),
 });
-//   invalidatesTags: [{ type: "User", id: "CURRENT" }],
 export const {
   useGetProductsQuery,
   useGetFullProductQuery,
@@ -205,5 +209,6 @@ export const {
   useEditProductMutation,
   useDeleteProductMutation,
   useGetFilteredTagsQuery,
+  useGetImageInfoQuery,
 } = api;
 export default api.reducer;

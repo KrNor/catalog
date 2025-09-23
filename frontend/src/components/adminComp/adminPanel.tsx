@@ -18,6 +18,9 @@ const ActionSelection = () => {
         <ListGroup.Item action onClick={() => navigate(`manageProducts`)}>
           Manage Products
         </ListGroup.Item>
+        <ListGroup.Item action onClick={() => navigate(`uploadImage`)}>
+          Upload Image
+        </ListGroup.Item>
       </ListGroup>
     </Container>
   );

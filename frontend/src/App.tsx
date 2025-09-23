@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/protectedRoute";
 import PanelHome from "./components/adminComp/panelHome";
 import Login from "./components/loginPage";
 import SingleProductEdit from "./components/adminComp/singleProductEdit";
+import UploadImage from "./components/adminComp/uploadImage";
 
 import { AuthHook } from "./hooks";
 
@@ -49,6 +50,7 @@ const App = () => {
                 path="manageProducts/:id"
                 element={<SingleProductEdit />}
               />
+              <Route path="uploadImage" element={<UploadImage />} />
             </Route>
           </Route>
           <Route path="/" element={<Home />} />

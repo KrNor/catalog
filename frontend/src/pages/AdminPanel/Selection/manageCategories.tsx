@@ -6,8 +6,8 @@ import {
   useGetAllCategoriesQuery,
   useDeleteCategoryMutation,
   useEditCategoryMutation,
-} from "../../reducers/apiReducer";
-import type { FullCategoryObject } from "../../types";
+} from "../../../reducers/apiReducer";
+import type { FullCategoryObject } from "../../../types/types";
 
 const CategoryManager = () => {
   const { data: categories, isLoading, isError } = useGetAllCategoriesQuery();

@@ -7,12 +7,13 @@ import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import {
   useGetCategoryFamilyQuery,
   useCreateCategoryMutation,
-} from "../../reducers/apiReducer";
-import type { CategoryToReturn } from "../../types";
+} from "../../../reducers/apiReducer";
+import type { CategoryToReturn } from "../../../types/types";
+
 import {
   createCategorySchema,
   type CategorySchemaType,
-} from "../../validation";
+} from "../../../schemas/createCategorySchema";
 
 const CreateCategory = () => {
   const [currentCategory, setCurrentCategory] = useState<string | undefined>(

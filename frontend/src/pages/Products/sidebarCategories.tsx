@@ -1,9 +1,9 @@
 import { Spinner, Alert, ListGroup } from "react-bootstrap";
 import { useSearchParams, useNavigate } from "react-router-dom"; //
 import { useState, useEffect } from "react";
-import { useGetCategoryFamilyQuery } from "../reducers/apiReducer";
-import { BaseCategoryHook } from "../hooks";
-import type { CategoryToReturn } from "../types";
+import { useGetCategoryFamilyQuery } from "../../reducers/apiReducer";
+import { useBaseCategoryFamily } from "../../hooks/useBaseCategoryFamily";
+import type { CategoryToReturn } from "../../types/types";
 import { useFormContext } from "react-hook-form";
 
 const SidebarCategories = () => {
@@ -17,7 +17,8 @@ const SidebarCategories = () => {
 
   const categoryy = searchParams.get("category");
 
-  const { baseCatFam, baseCatFamLoading, baseCatFamError } = BaseCategoryHook();
+  const { baseCatFam, baseCatFamLoading, baseCatFamError } =
+    useBaseCategoryFamily();
 
   const {
     data: currentCategoryFamily,

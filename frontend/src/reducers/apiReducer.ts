@@ -11,9 +11,10 @@ import type {
   SimplifiedProductsWithPaginationMeta,
   TagWithCountFromDb,
   ImageUploadInfo,
-} from "../types";
+} from "../types/types";
 
-import type { TagWithIdSchemaType, ProductSchemaType } from "../validation";
+import type { TagWithIdSchemaType } from "../schemas/tagSchema";
+import type { ProductSchemaType } from "../schemas/productSchema";
 
 export const api = createApi({
   reducerPath: "api",

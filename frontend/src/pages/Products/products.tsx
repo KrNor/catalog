@@ -16,8 +16,8 @@ import { useEffect, useState } from "react";
 import {
   useGetProductsQuery,
   useGetCategoryFamilyQuery,
-} from "../reducers/apiReducer";
-import type { SimplifiedProduct } from "../types";
+} from "../../reducers/apiReducer";
+import type { SimplifiedProduct } from "../../types/types";
 
 import SearchFilters from "./searchFilters";
 

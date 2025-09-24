@@ -13,7 +13,8 @@ import {
 import { Link, useNavigate } from "react-router-dom"; // useSearchParams
 import { useState } from "react";
 
-import { AuthHook, BaseCategoryHook } from "../hooks";
+import { useAuth } from "../../hooks/useAuth";
+import { useBaseCategoryFamily } from "../../hooks/useBaseCategoryFamily";
 
 const NavBarSearch = () => {
   const navigate = useNavigate();
@@ -53,8 +54,9 @@ const NavBarSearch = () => {
 const NavigationBar = () => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
-  const { user, isLoading, error, logout } = AuthHook();
-  const { baseCatFam, baseCatFamLoading, baseCatFamError } = BaseCategoryHook();
+  const { user, isLoading, error, logout } = useAuth();
+  const { baseCatFam, baseCatFamLoading, baseCatFamError } =
+    useBaseCategoryFamily();
 
   const navigate = useNavigate();
 

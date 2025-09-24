@@ -4,7 +4,10 @@ import { useEffect } from "react";
 import { useForm, Controller, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { searchSchema, type SearchSchemaType } from "../validation";
+import {
+  searchSchema,
+  type SearchSchemaType,
+} from "../../schemas/searchSchema";
 import { GetTagsFromUrl } from "./reusableFunctions";
 import SidebarCategories from "./sidebarCategories";
 import SidebarTags from "./sidebarTags";

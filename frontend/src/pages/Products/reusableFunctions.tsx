@@ -1,6 +1,6 @@
 import qs, { type ParsedQs } from "qs";
 
-import { type TagInSearchSchemaType } from "../validation";
+import { type TagInSearchSchemaType } from "../../schemas/tagSchema";
 
 export const TagObjectToSring = (tagObj: Record<string, string[]>): string => {
   const resultString = qs.stringify(

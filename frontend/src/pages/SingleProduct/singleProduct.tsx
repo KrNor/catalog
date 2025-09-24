@@ -13,7 +13,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 
-import { useGetFullProductQuery } from "../reducers/apiReducer";
+import { useGetFullProductQuery } from "../../reducers/apiReducer";
 
 const SingleProductDetailed = () => {
   const [key, setKey] = useState<string>("inactive");

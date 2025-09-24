@@ -1,9 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-import { AuthHook } from "../hooks";
+import { useAuth } from "../hooks/useAuth";
 
 const ProtectedRoute = () => {
-  const { user } = AuthHook();
+  const { user } = useAuth();
   if (user && user.user.role === "admin") {
     return <Outlet />;
   } else {

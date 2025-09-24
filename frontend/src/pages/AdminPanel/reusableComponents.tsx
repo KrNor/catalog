@@ -22,11 +22,11 @@ import type {
   CategoryToReturn,
   TagToSave,
   CategoryFamilyObject,
-} from "../../types";
+} from "../../types/types";
 import {
   tagInsideProductSchema,
   type TagWithIdSchemaType,
-} from "../../validation";
+} from "../../schemas/tagSchema";
 
 interface CategorySelectProps {
   currentCategory: string;

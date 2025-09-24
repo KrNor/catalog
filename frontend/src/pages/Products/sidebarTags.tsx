@@ -2,7 +2,7 @@ import { Spinner, Alert, FormCheck, Button } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import { useGetFilteredTagsQuery } from "../reducers/apiReducer";
+import { useGetFilteredTagsQuery } from "../../reducers/apiReducer";
 import { GetTagsFromUrl } from "./reusableFunctions";
 
 interface SidebarTagProps {

@@ -1,30 +1,25 @@
 import { Container, Spinner, Alert } from "react-bootstrap";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import SingleProductDetailed from "./components/singleProduct";
-import Products from "./components/products";
-import NavigationBar from "./components/navigationBar";
-import AdminPanel from "./components/adminComp/adminPanel";
-import CreateCategory from "./components/adminComp/createCategory";
-import ManageCategories from "./components/adminComp/manageCategories";
-import CreateProduct from "./components/adminComp/createProduct";
-import ManageProducts from "./components/adminComp/manageProducts";
+import SingleProductDetailed from "./pages/SingleProduct/singleProduct";
+import Products from "./pages/Products/products";
+import NavigationBar from "./pages/NavBar/navigationBar";
+import AdminPanel from "./pages/AdminPanel/adminPanel";
+import CreateCategory from "./pages/AdminPanel/Selection/createCategory";
+import ManageCategories from "./pages/AdminPanel/Selection/manageCategories";
+import CreateProduct from "./pages/AdminPanel/Selection/createProduct";
+import ManageProducts from "./pages/AdminPanel/Selection/manageProducts";
 import ProtectedRoute from "./components/protectedRoute";
-import PanelHome from "./components/adminComp/panelHome";
-import Login from "./components/loginPage";
-import SingleProductEdit from "./components/adminComp/singleProductEdit";
-import UploadImage from "./components/adminComp/uploadImage";
+import PanelHome from "./pages/AdminPanel/Selection/panelHome";
+import Login from "./pages/Login/loginPage";
+import SingleProductEdit from "./pages/AdminPanel/Selection/singleProductEdit";
+import UploadImage from "./pages/AdminPanel/uploadImage";
+import Home from "./pages/Home/Home";
 
-import { AuthHook } from "./hooks";
-
-const Home = () => (
-  <div>
-    <h2>Welcome to the Catalog!</h2>
-  </div>
-);
+import { useAuth } from "./hooks/useAuth";
 
 const App = () => {
-  const { isLoading, error } = AuthHook(); //user?
+  const { isLoading, error } = useAuth();
 
   if (isLoading) return <Spinner animation="border" />;
 

@@ -1,11 +1,12 @@
 import { Form, Button, Alert } from "react-bootstrap";
 
-import { useAppDispatch, AuthHook } from "../hooks";
-import { api } from "../reducers/apiReducer";
-import type { LoginDetails } from "../types";
+import { useAppDispatch } from "../../hooks/index";
+import { useAuth } from "../../hooks/useAuth";
+import { api } from "../../reducers/apiReducer";
+import type { LoginDetails } from "../../types/types";
 
 const Login = () => {
-  const { user, error, login, logout } = AuthHook();
+  const { user, error, login, logout } = useAuth();
 
   const dispatch = useAppDispatch();
 

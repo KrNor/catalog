@@ -1,8 +1,11 @@
 import { Cloudinary } from "@cloudinary/url-gen";
 import { axiosGet } from "./axios";
 
-import type { ImageUploadInfo, ImageUploadSignatureObject } from "../types";
-import { imageSignatureSchema } from "../validation";
+import type {
+  ImageUploadInfo,
+  ImageUploadSignatureObject,
+} from "../types/types";
+import { imageSignatureSchema } from "../schemas/imageSignatureSchema";
 
 export const initializeCloudinary = (config: ImageUploadInfo): Cloudinary => {
   const cloudinaryInstance = new Cloudinary({

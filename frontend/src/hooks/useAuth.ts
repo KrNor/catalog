@@ -1,35 +1,17 @@
 import Cookies from "js-cookie";
-import { useDispatch, useSelector, useStore } from "react-redux";
+import { useAppDispatch } from "./index";
 
-import type { AppDispatch, AppStore, RootState, LoginDetails } from "./types";
+import type { LoginDetails } from "../types/types";
 import {
   api,
   useGetCurrentUserQuery,
   useLoginUserMutation,
   useLogoutUserMutation,
-  useGetCategoryFamilyQuery,
-} from "./reducers/apiReducer";
+} from "../reducers/apiReducer";
 
-export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
-export const useAppSelector = useSelector.withTypes<RootState>();
-export const useAppStore = useStore.withTypes<AppStore>();
+export const useAuth = () => {
+  const dispatch = useAppDispatch();
 
-export const BaseCategoryHook = () => {
-  const {
-    data: baseCatFam,
-    isLoading: baseCatFamLoading,
-    error: baseCatFamError,
-  } = useGetCategoryFamilyQuery(undefined);
-
-  return {
-    baseCatFam,
-    baseCatFamLoading,
-    baseCatFamError,
-  };
-};
-
-export const AuthHook = () => {
-  const dispatch = useDispatch();
   const hasIsLoggedInCookie = Cookies.get("isLoggedIn") === "true";
   const {
     data: user,

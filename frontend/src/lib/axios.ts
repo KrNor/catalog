@@ -1,10 +1,4 @@
-// import { Cloudinary } from "@cloudinary/url-gen";
-
 import axios from "axios";
-
-// import type { ImageUploadInfo, ImageUploadSignatureObject } from "../types";
-
-// import { imageSignatureSchema } from "../validation";
 
 export const axiosGet = async (params: string) => {
   try {

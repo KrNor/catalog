@@ -7,7 +7,7 @@ import {
   useGetCurrentUserQuery,
   useLoginUserMutation,
   useLogoutUserMutation,
-} from "../reducers/apiReducer";
+} from "../redux/apiReducer";
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();

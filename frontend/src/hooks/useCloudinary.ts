@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Cloudinary } from "@cloudinary/url-gen";
-import { useGetImageInfoQuery } from "../reducers/apiReducer";
+import { useGetImageInfoQuery } from "../redux/apiReducer";
 import { initializeCloudinary } from "../lib/cloudinary";
 
 export const useCloudinary = () => {

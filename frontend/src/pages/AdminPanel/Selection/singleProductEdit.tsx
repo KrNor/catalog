@@ -17,7 +17,7 @@ import {
 import {
   useGetFullProductQuery,
   useEditProductMutation,
-} from "../../../reducers/apiReducer";
+} from "../../../redux/apiReducer";
 
 export const SingleProductEdit = () => {
   const { id } = useParams();

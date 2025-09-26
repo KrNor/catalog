@@ -6,7 +6,7 @@ import {
   useGetAllCategoriesQuery,
   useDeleteCategoryMutation,
   useEditCategoryMutation,
-} from "../../../reducers/apiReducer";
+} from "../../../redux/apiReducer";
 import type { FullCategoryObject } from "../../../types/types";
 
 const CategoryManager = () => {

@@ -7,7 +7,7 @@ import { useState } from "react";
 import {
   useGetProductsQuery,
   useDeleteProductMutation,
-} from "../../../reducers/apiReducer";
+} from "../../../redux/apiReducer";
 
 const ManageProducts = () => {
   const navigate = useNavigate();

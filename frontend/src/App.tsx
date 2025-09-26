@@ -3,13 +3,14 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import SingleProductDetailed from "./pages/SingleProduct/singleProduct";
 import Products from "./pages/Products/products";
-import NavigationBar from "./pages/NavBar/navigationBar";
+import NavigationBar from "./components/ui/navigationBar";
+import Footer from "./components/ui/footer";
 import AdminPanel from "./pages/AdminPanel/adminPanel";
 import CreateCategory from "./pages/AdminPanel/Selection/createCategory";
 import ManageCategories from "./pages/AdminPanel/Selection/manageCategories";
 import CreateProduct from "./pages/AdminPanel/Selection/createProduct";
 import ManageProducts from "./pages/AdminPanel/Selection/manageProducts";
-import ProtectedRoute from "./components/protectedRoute";
+import ProtectedRoute from "./components/auth/protectedRoute";
 import PanelHome from "./pages/AdminPanel/Selection/panelHome";
 import Login from "./pages/Login/loginPage";
 import SingleProductEdit from "./pages/AdminPanel/Selection/singleProductEdit";
@@ -51,14 +52,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
         </Routes>
       </Router>
-      <Container>
-        <footer className="py-5">
-          <div className="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
-            <p>&copy; 2025 Catalog, Inc. All rights reserved.</p>
-            <ul className="list-unstyled d-flex"></ul>
-          </div>
-        </footer>
-      </Container>
+      <Footer />
     </Container>
   );
 };

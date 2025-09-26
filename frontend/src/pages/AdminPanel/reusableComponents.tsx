@@ -17,7 +17,7 @@ import {
   useGetCategoryFamilyQuery,
   useGetAllTagsQuery,
   useCreateTagMutation,
-} from "../../reducers/apiReducer";
+} from "../../redux/apiReducer";
 import type {
   CategoryToReturn,
   TagToSave,

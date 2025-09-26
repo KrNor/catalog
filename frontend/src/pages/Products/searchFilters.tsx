@@ -8,7 +8,7 @@ import {
   searchSchema,
   type SearchSchemaType,
 } from "../../schemas/searchSchema";
-import { GetTagsFromUrl } from "./reusableFunctions";
+import { GetTagsFromUrl } from "../../helpers/reusableFunctions";
 import SidebarCategories from "./sidebarCategories";
 import SidebarTags from "./sidebarTags";
 

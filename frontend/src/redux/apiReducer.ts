@@ -16,18 +16,18 @@ import type {
 import type { TagWithIdSchemaType } from "../schemas/tagSchema";
 import type { ProductSchemaType } from "../schemas/productSchema";
 
-export const api = createApi({
+export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3000/api/",
     credentials: "include",
   }),
   tagTypes: ["Product", "User", "Category", "Tag", "ImageInfo"],
+  endpoints: () => ({}),
+});
+
+export const productApiInject = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getFilteredTags: build.query<TagWithCountFromDb[], string>({
-      query: (queryString) => ({ url: `filter/sidebar/?${queryString}` }),
-      providesTags: [{ type: "Tag", id: "LIST" }],
-    }),
     getProducts: build.query<SimplifiedProductsWithPaginationMeta, string>({
       query: (queryString) => ({ url: `product?${queryString}` }),
       providesTags: (result) =>
@@ -45,6 +45,43 @@ export const api = createApi({
       query: (id) => ({ url: `product/${id}` }),
       providesTags: (_result, _error, id) => [{ type: "Product", id }],
     }),
+    createProduct: build.mutation<Product, ProductSchemaType>({
+      query: (body) => ({
+        url: `product`,
+        body: body,
+        method: "POST",
+      }),
+      invalidatesTags: ["Product"],
+    }),
+    editProduct: build.mutation<Product, Partial<Product>>({
+      query(data) {
+        const { id, ...body } = data;
+        return {
+          url: `product/${id}`,
+          body: body,
+          method: "POST",
+        };
+      },
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "Product", id },
+        "Product",
+      ],
+    }),
+    deleteProduct: build.mutation<Product, string>({
+      query: (id) => ({
+        url: `product/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_result, _error, id) => [
+        { type: "Product", id },
+        "Product",
+      ],
+    }),
+  }),
+});
+
+export const userApiInject = productApiInject.injectEndpoints({
+  endpoints: (build) => ({
     getCurrentUser: build.query<UserObject, void>({
       query: () => ({
         url: `auth/check`,
@@ -66,6 +103,11 @@ export const api = createApi({
         method: "POST",
       }),
     }),
+  }),
+});
+
+export const categoryApiInject = userApiInject.injectEndpoints({
+  endpoints: (build) => ({
     getCategoryFamily: build.query<CategoryFamilyObject, string | undefined>({
       query: (categoryId) =>
         categoryId
@@ -131,13 +173,14 @@ export const api = createApi({
       }),
       invalidatesTags: ["Category"],
     }),
-    createProduct: build.mutation<Product, ProductSchemaType>({
-      query: (body) => ({
-        url: `product`,
-        body: body,
-        method: "POST",
-      }),
-      invalidatesTags: ["Product"],
+  }),
+});
+
+export const tagApiInject = categoryApiInject.injectEndpoints({
+  endpoints: (build) => ({
+    getFilteredTags: build.query<TagWithCountFromDb[], string>({
+      query: (queryString) => ({ url: `filter/sidebar/?${queryString}` }),
+      providesTags: [{ type: "Tag", id: "LIST" }],
     }),
     getAllTags: build.query<TagWithIdSchemaType[], void>({
       query: () => ({
@@ -162,36 +205,18 @@ export const api = createApi({
       }),
       invalidatesTags: [{ type: "Tag", id: "LIST" }, "Tag"],
     }),
-    editProduct: build.mutation<Product, Partial<Product>>({
-      query(data) {
-        const { id, ...body } = data;
-        return {
-          url: `product/${id}`,
-          body: body,
-          method: "POST",
-        };
-      },
-      invalidatesTags: (_result, _error, { id }) => [
-        { type: "Product", id },
-        "Product",
-      ],
-    }),
-    deleteProduct: build.mutation<Product, string>({
-      query: (id) => ({
-        url: `product/${id}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: (_result, _error, id) => [
-        { type: "Product", id },
-        "Product",
-      ],
-    }),
+  }),
+});
+
+export const api = tagApiInject.injectEndpoints({
+  endpoints: (build) => ({
     getImageInfo: build.query<ImageUploadInfo, void>({
       query: () => `image/info`,
       providesTags: () => [{ type: "ImageInfo" }],
     }),
   }),
 });
+
 export const {
   useGetProductsQuery,
   useGetFullProductQuery,
@@ -212,4 +237,5 @@ export const {
   useGetFilteredTagsQuery,
   useGetImageInfoQuery,
 } = api;
+
 export default api.reducer;

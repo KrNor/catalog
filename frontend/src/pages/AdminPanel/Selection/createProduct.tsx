@@ -14,7 +14,7 @@ import {
   CreateAndSelectTags,
 } from "../reusableComponents";
 
-import { useCreateProductMutation } from "../../../reducers/apiReducer";
+import { useCreateProductMutation } from "../../../redux/apiReducer";
 
 const CreateProduct = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");

@@ -1,11 +1,14 @@
 import axios from "axios";
 
+export const axiosInstance = axios.create({
+  baseURL: "http://localhost:3000/api/",
+  withCredentials: true,
+});
+
 export const axiosGet = async (params: string) => {
   try {
     const ress = await axios
-      .get(`http://localhost:3000/api/image/signature?${params}`, {
-        withCredentials: true,
-      })
+      .get(`image/signature?${params}`)
       .then((response) => {
         console.log(response.data);
         return response.data;

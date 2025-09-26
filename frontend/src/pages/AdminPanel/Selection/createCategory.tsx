@@ -7,7 +7,7 @@ import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import {
   useGetCategoryFamilyQuery,
   useCreateCategoryMutation,
-} from "../../../reducers/apiReducer";
+} from "../../../redux/apiReducer";
 import type { CategoryToReturn } from "../../../types/types";
 
 import {

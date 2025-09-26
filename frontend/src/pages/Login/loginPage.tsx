@@ -2,7 +2,7 @@ import { Form, Button, Alert } from "react-bootstrap";
 
 import { useAppDispatch } from "../../hooks/index";
 import { useAuth } from "../../hooks/useAuth";
-import { api } from "../../reducers/apiReducer";
+import { api } from "../../redux/apiReducer";
 import type { LoginDetails } from "../../types/types";
 
 const Login = () => {

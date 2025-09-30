@@ -1,8 +1,10 @@
 import qs, { type ParsedQs } from "qs";
 
-import { type TagInSearchSchemaType } from "../schemas/tagSchema";
+import { type TagInSearchSchemaType } from "@/schemas/tagSchema";
 
-export const TagObjectToSring = (tagObj: Record<string, string[]>): string => {
+export const getSringFromTagObject = (
+  tagObj: Record<string, string[]>
+): string => {
   const resultString = qs.stringify(
     {
       tags: tagObj,
@@ -13,7 +15,7 @@ export const TagObjectToSring = (tagObj: Record<string, string[]>): string => {
   return resultString;
 };
 
-const transformQsResultToObject = (
+export const getObjectFromQs = (
   qsResult: ParsedQs
 ): Record<string, string[]> => {
   const tags: Record<string, string[]> = {};
@@ -39,19 +41,19 @@ const transformQsResultToObject = (
   return tags;
 };
 
-export const TagStringToObject = (
+export const getObjectFromTagString = (
   tagString: string
 ): Record<string, string[]> => {
   const resultObj = qs.parse(tagString, {
     allowDots: true,
   });
 
-  const realResult = transformQsResultToObject(resultObj);
+  const realResult = getObjectFromQs(resultObj);
 
   return realResult;
 };
 
-export const GetTagsFromUrl = (
+export const getTagsFromUrl = (
   searchParams: URLSearchParams
 ): TagInSearchSchemaType => {
   let temp = "";
@@ -64,7 +66,7 @@ export const GetTagsFromUrl = (
 
   if (temp.length > 1) {
     temp = temp.substring(0, temp.length - 1);
-    const usableTag = TagStringToObject(temp);
+    const usableTag = getObjectFromTagString(temp);
     return { tags: usableTag };
   } else {
     return { tags: {} };

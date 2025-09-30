@@ -2,8 +2,8 @@ import { Alert, Spinner } from "react-bootstrap";
 import { AdvancedImage } from "@cloudinary/react";
 import { CloudinaryImage } from "@cloudinary/url-gen";
 
-import { useCloudinary } from "../../hooks/useCloudinary";
-import { UploadWidget } from "./imageComponents";
+import { useCloudinary } from "@/hooks/useCloudinary";
+import { UploadWidgetButton } from "@/pages/AdminPanel/uploadWidgetButton";
 
 const UploadImage = () => {
   const {
@@ -35,7 +35,7 @@ const UploadImage = () => {
     <div>
       <div>
         {cloudinaryInstanceAndInfoLoaded ? (
-          <UploadWidget />
+          <UploadWidgetButton />
         ) : (
           <div>wait...</div>
         )}

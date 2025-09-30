@@ -2,8 +2,8 @@ import { Spinner, Alert, FormCheck, Button } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import { useGetFilteredTagsQuery } from "../../redux/apiReducer";
-import { GetTagsFromUrl } from "../../helpers/reusableFunctions";
+import { useGetFilteredTagsQuery } from "@/redux/apiReducer";
+import { getTagsFromUrl } from "@/helpers/queryStringHelpers";
 
 interface SidebarTagProps {
   selectedTags: Record<string, string[]>;
@@ -26,8 +26,8 @@ const SidebarTags = ({ selectedTags, tagClick }: SidebarTagProps) => {
   const [initialTags, setInitialTags] = useState<Record<string, string[]>>();
 
   useEffect(() => {
-    const temp111 = GetTagsFromUrl(searchParams);
-    setInitialTags(temp111.tags);
+    const tagsToUse = getTagsFromUrl(searchParams);
+    setInitialTags(tagsToUse.tags);
   }, [searchParams]);
 
   if (tagLoading) {

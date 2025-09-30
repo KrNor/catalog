@@ -1,23 +1,23 @@
 import { Container, Spinner, Alert } from "react-bootstrap";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import SingleProductDetailed from "./pages/SingleProduct/singleProduct";
-import Products from "./pages/Products/products";
-import NavigationBar from "./components/ui/navigationBar";
-import Footer from "./components/ui/footer";
-import AdminPanel from "./pages/AdminPanel/adminPanel";
-import CreateCategory from "./pages/AdminPanel/Selection/createCategory";
-import ManageCategories from "./pages/AdminPanel/Selection/manageCategories";
-import CreateProduct from "./pages/AdminPanel/Selection/createProduct";
-import ManageProducts from "./pages/AdminPanel/Selection/manageProducts";
-import ProtectedRoute from "./components/auth/protectedRoute";
-import PanelHome from "./pages/AdminPanel/Selection/panelHome";
-import Login from "./pages/Login/loginPage";
-import SingleProductEdit from "./pages/AdminPanel/Selection/singleProductEdit";
-import UploadImage from "./pages/AdminPanel/uploadImage";
-import Home from "./pages/Home/Home";
+import SingleProductDetailed from "@/pages/SingleProduct/singleProduct";
+import Products from "@/pages/Products/products";
+import NavigationBar from "@/components/ui/navigationBar";
+import Footer from "@/components/ui/footer";
+import AdminPanel from "@/pages/AdminPanel/adminPanel";
+import CreateCategory from "@/pages/AdminPanel/Selection/createCategory";
+import ManageCategories from "@/pages/AdminPanel/Selection/manageCategories";
+import CreateProduct from "@/pages/AdminPanel/Selection/createProduct";
+import ManageProducts from "@/pages/AdminPanel/Selection/manageProducts";
+import ProtectedRoute from "@/components/auth/protectedRoute";
+import PanelHome from "@/pages/AdminPanel/Selection/panelHome";
+import Login from "@/pages/Login/loginPage";
+import SingleProductEdit from "@/pages/AdminPanel/Selection/singleProductEdit";
+import UploadImage from "@/pages/AdminPanel/uploadImage";
+import Home from "@/pages/Home/Home";
 
-import { useAuth } from "./hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 
 const App = () => {
   const { isLoading, error } = useAuth();

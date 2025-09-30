@@ -7,17 +7,17 @@ import {
   // Breadcrumb,
 } from "react-bootstrap";
 
-interface ProductSortingAndInfoProps {
+interface ProductFilterSortProps {
   categoryName: string;
   productCount: number;
   onChange: (value: string) => void;
 }
 
-export const ProductSortingAndInfo = ({
+export const ProductFilterSort = ({
   categoryName,
   productCount,
   onChange,
-}: ProductSortingAndInfoProps) => {
+}: ProductFilterSortProps) => {
   return (
     <Container>
       <Navbar>
@@ -41,4 +41,4 @@ export const ProductSortingAndInfo = ({
   );
 };
 
-export default ProductSortingAndInfo;
+export default ProductFilterSort;

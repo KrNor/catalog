@@ -6,18 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { NumericFormat } from "react-number-format";
 
-import {
-  CategorySelectInForm,
-  CreateAndSelectTags,
-} from "../reusableComponents";
-import {
-  productSchema,
-  type ProductSchemaType,
-} from "../../../schemas/productSchema";
+import { CategorySelector } from "@/pages/AdminPanel/categorySelector";
+import { TagSelectorAndCreator } from "@/pages/AdminPanel/tagSelectorAndCreator";
+import { productSchema, type ProductSchemaType } from "@/schemas/productSchema";
 import {
   useGetFullProductQuery,
   useEditProductMutation,
-} from "../../../redux/apiReducer";
+} from "@/redux/apiReducer";
 
 export const SingleProductEdit = () => {
   const { id } = useParams();
@@ -214,7 +209,7 @@ export const SingleProductEdit = () => {
           name="category"
           control={control}
           render={({ field }) => (
-            <CategorySelectInForm
+            <CategorySelector
               currentCategory={field.value}
               onChange={field.onChange}
               error={errors.category}
@@ -225,7 +220,7 @@ export const SingleProductEdit = () => {
           name="tags"
           control={control}
           render={({ field }) => (
-            <CreateAndSelectTags
+            <TagSelectorAndCreator
               selectedTags={field.value}
               onChange={field.onChange}
               setErrorMessage={setErrorMessage}

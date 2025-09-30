@@ -1,13 +1,12 @@
 import { Row, Container, Spinner, Alert, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-
 import { useState } from "react";
 
 import {
   useGetProductsQuery,
   useDeleteProductMutation,
-} from "../../../redux/apiReducer";
+} from "@/redux/apiReducer";
 
 const ManageProducts = () => {
   const navigate = useNavigate();

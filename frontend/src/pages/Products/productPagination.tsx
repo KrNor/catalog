@@ -1,12 +1,4 @@
-import {
-  Container,
-  Row,
-  Col,
-  Navbar,
-  Form,
-  Pagination,
-  // Breadcrumb,
-} from "react-bootstrap";
+import { Container, Row, Col, Navbar, Form, Pagination } from "react-bootstrap";
 
 import { useEffect, useState } from "react";
 
@@ -28,7 +20,6 @@ export const ProductPagination = ({
   const [pageCount, setPageCount] = useState<number>(
     Math.ceil(productCount / resultsPerPage)
   );
-  // console.log(pageCount + " of pages are total ");
 
   useEffect(() => {
     setPageCount(Math.ceil(productCount / resultsPerPage));

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { tagInsideProductSchema } from "./tagSchema";
+import { tagInsideProductSchema } from "@/schemas/tagSchema";
 
 export const productSchema = z.object({
   name: z.string().min(3).max(125),

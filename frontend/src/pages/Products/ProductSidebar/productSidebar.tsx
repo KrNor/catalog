@@ -4,15 +4,12 @@ import { useEffect } from "react";
 import { useForm, Controller, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import {
-  searchSchema,
-  type SearchSchemaType,
-} from "../../schemas/searchSchema";
-import { GetTagsFromUrl } from "../../helpers/reusableFunctions";
-import SidebarCategories from "./sidebarCategories";
-import SidebarTags from "./sidebarTags";
+import { searchSchema, type SearchSchemaType } from "@/schemas/searchSchema";
+import { getTagsFromUrl } from "@/helpers/queryStringHelpers";
+import SidebarCategories from "@/pages/Products/ProductSidebar/sidebarCategories";
+import SidebarTags from "@/pages/Products/ProductSidebar/sidebarTags";
 
-const SearchFilters = () => {
+const ProductSidebar = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -46,7 +43,7 @@ const SearchFilters = () => {
   // console.log(watch("tags"));
 
   useEffect(() => {
-    const tagsFromUrl = GetTagsFromUrl(searchParams);
+    const tagsFromUrl = getTagsFromUrl(searchParams);
     setValue("tags", tagsFromUrl.tags);
   }, [searchParams, setValue]);
 
@@ -165,4 +162,4 @@ const SearchFilters = () => {
   );
 };
 
-export default SearchFilters;
+export default ProductSidebar;

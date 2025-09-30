@@ -1,7 +1,7 @@
 import { Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-import type { SimplifiedProduct } from "../../types/types";
+import type { SimplifiedProduct } from "@/types/product";
 
 interface SingleProductProps {
   product: SimplifiedProduct;

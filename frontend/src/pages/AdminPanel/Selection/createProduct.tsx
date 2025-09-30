@@ -1,20 +1,15 @@
 import { useForm, Controller } from "react-hook-form";
-import {
-  productSchema,
-  type ProductSchemaType,
-} from "../../../schemas/productSchema";
+import { productSchema, type ProductSchemaType } from "@/schemas/productSchema";
 import { Form, Button, Alert } from "react-bootstrap";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { NumericFormat } from "react-number-format";
 
-import {
-  CategorySelectInForm,
-  CreateAndSelectTags,
-} from "../reusableComponents";
+import { CategorySelector } from "@/pages/AdminPanel/categorySelector";
+import { TagSelectorAndCreator } from "@/pages/AdminPanel/tagSelectorAndCreator";
 
-import { useCreateProductMutation } from "../../../redux/apiReducer";
+import { useCreateProductMutation } from "@/redux/apiReducer";
 
 const CreateProduct = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -179,7 +174,7 @@ const CreateProduct = () => {
           name="category"
           control={control}
           render={({ field }) => (
-            <CategorySelectInForm
+            <CategorySelector
               currentCategory={field.value}
               onChange={field.onChange}
               error={errors.category}
@@ -190,7 +185,7 @@ const CreateProduct = () => {
           name="tags"
           control={control}
           render={({ field }) => (
-            <CreateAndSelectTags
+            <TagSelectorAndCreator
               selectedTags={field.value}
               onChange={field.onChange}
               setErrorMessage={setErrorMessage}

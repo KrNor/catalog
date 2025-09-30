@@ -1,4 +1,4 @@
-import { useGetCategoryFamilyQuery } from "../redux/apiReducer";
+import { useGetCategoryFamilyQuery } from "@/redux/apiReducer";
 
 export const useBaseCategoryFamily = () => {
   const {

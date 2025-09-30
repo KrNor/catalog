@@ -13,8 +13,8 @@ import {
 import { Link, useNavigate } from "react-router-dom"; // useSearchParams
 import { useState } from "react";
 
-import { useAuth } from "../../hooks/useAuth";
-import { useBaseCategoryFamily } from "../../hooks/useBaseCategoryFamily";
+import { useAuth } from "@/hooks/useAuth";
+import { useBaseCategoryFamily } from "@/hooks/useBaseCategoryFamily";
 
 const NavBarSearch = () => {
   const navigate = useNavigate();

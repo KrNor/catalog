@@ -1,20 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+import type { UserObject, LoginDetails } from "@/types/auth";
+import type { TagWithCountFromDb } from "@/types/tag";
 import type {
-  Product,
-  UserObject,
-  LoginDetails,
   CategoryFamilyObject,
   FullCategoryObject,
-  TagToSave,
   CategoryToSave,
+} from "@/types/category";
+import type {
+  Product,
   SimplifiedProductsWithPaginationMeta,
-  TagWithCountFromDb,
-  ImageUploadInfo,
-} from "../types/types";
+} from "@/types/product";
+import type { TagToSave } from "@/types/tag";
+import type { ImageUploadInfo } from "@/types/image";
 
-import type { TagWithIdSchemaType } from "../schemas/tagSchema";
-import type { ProductSchemaType } from "../schemas/productSchema";
+import type { TagWithIdSchemaType } from "@/schemas/tagSchema";
+import type { ProductSchemaType } from "@/schemas/productSchema";
 
 export const baseApi = createApi({
   reducerPath: "api",

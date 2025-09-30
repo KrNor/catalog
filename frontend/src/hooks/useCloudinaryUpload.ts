@@ -1,15 +1,12 @@
-import { Button, Spinner, Alert } from "react-bootstrap";
 import qs from "qs";
 import { useRef, useEffect } from "react";
-import { useCloudinary } from "../../hooks/useCloudinary";
-import { getSignatureForImage } from "../../lib/cloudinary";
+import { useCloudinary } from "@/hooks/useCloudinary";
+import imageService from "@/services/imageService";
 
-export const UploadWidget = () => {
+export const useCloudinaryUpload = () => {
   const widgetRef = useRef<CloudinaryUploadWidget | null>(null);
-  // console.log(widgetRef);
 
-  const { cloudinaryUploadInfo, cloudinaryInfoLoading, cloudinaryInfoError } =
-    useCloudinary();
+  const { cloudinaryUploadInfo } = useCloudinary();
 
   useEffect(() => {
     if (window.cloudinary && cloudinaryUploadInfo) {
@@ -18,7 +15,7 @@ export const UploadWidget = () => {
           cloudName: cloudinaryUploadInfo.cloudName,
           prepareUploadParams: async (cb, params) => {
             const initSignatureInfo = qs.stringify(params);
-            const imageUploadInfo = await getSignatureForImage(
+            const imageUploadInfo = await imageService.getSignatureForImage(
               initSignatureInfo
             );
             cb({
@@ -38,21 +35,7 @@ export const UploadWidget = () => {
     }
   }, [cloudinaryUploadInfo]);
 
-  if (cloudinaryInfoLoading) {
-    return <Spinner animation="border" />;
-  }
-
-  if (cloudinaryInfoError) {
-    return (
-      <Alert variant="danger">
-        error occured related to image upload, try again later.
-      </Alert>
-    );
-  }
-
-  return (
-    <div>
-      <Button onClick={() => widgetRef.current?.open()}>upload image</Button>
-    </div>
-  );
+  return {
+    widgetRef,
+  };
 };

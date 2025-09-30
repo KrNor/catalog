@@ -1,13 +1,13 @@
 import Cookies from "js-cookie";
-import { useAppDispatch } from "./index";
+import { useAppDispatch } from "@/hooks/index";
 
-import type { LoginDetails } from "../types/types";
+import type { LoginDetails } from "@/types/auth";
 import {
   api,
   useGetCurrentUserQuery,
   useLoginUserMutation,
   useLogoutUserMutation,
-} from "../redux/apiReducer";
+} from "@/redux/apiReducer";
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();

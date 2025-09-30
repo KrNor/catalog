@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import apiReducer, { api } from "@/redux/apiReducer";
+import apiReducer, { baseApi } from "@/redux/baseApi";
 
 const store = configureStore({
   reducer: {
-    [api.reducerPath]: apiReducer,
+    [baseApi.reducerPath]: apiReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(api.middleware),
+    getDefaultMiddleware().concat(baseApi.middleware),
 });
 
 // Get the type of our store variable

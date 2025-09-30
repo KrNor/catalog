@@ -2,7 +2,7 @@ import { Form, Button, Alert } from "react-bootstrap";
 
 import { useAppDispatch } from "@/hooks/index";
 import { useAuth } from "@/hooks/useAuth";
-import { api } from "@/redux/apiReducer";
+import { baseApi } from "@/redux/baseApi";
 import type { LoginDetails } from "@/types/auth";
 
 const Login = () => {
@@ -12,7 +12,7 @@ const Login = () => {
 
   const HandleLogout = async () => {
     await logout();
-    dispatch(api.util.resetApiState());
+    dispatch(baseApi.util.resetApiState());
     console.log("logout succsessull");
   };
 

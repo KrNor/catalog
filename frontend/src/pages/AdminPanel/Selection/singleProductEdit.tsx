@@ -12,7 +12,7 @@ import { productSchema, type ProductSchemaType } from "@/schemas/productSchema";
 import {
   useGetFullProductQuery,
   useEditProductMutation,
-} from "@/redux/apiReducer";
+} from "@/redux/productEndpoints";
 
 export const SingleProductEdit = () => {
   const { id } = useParams();

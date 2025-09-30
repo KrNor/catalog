@@ -2,7 +2,7 @@ import type { FieldError } from "react-hook-form";
 import { Form, Alert, Spinner, Row } from "react-bootstrap";
 import { useState } from "react";
 
-import { useGetCategoryFamilyQuery } from "@/redux/apiReducer";
+import { useGetCategoryFamilyQuery } from "@/redux/categoryEndpoints";
 import type { CategoryToReturn, CategoryFamilyObject } from "@/types/category";
 interface CategorySelectProps {
   currentCategory: string;

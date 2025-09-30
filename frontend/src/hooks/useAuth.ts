@@ -2,12 +2,12 @@ import Cookies from "js-cookie";
 import { useAppDispatch } from "@/hooks/index";
 
 import type { LoginDetails } from "@/types/auth";
+import { baseApi } from "@/redux/baseApi";
 import {
-  api,
   useGetCurrentUserQuery,
   useLoginUserMutation,
   useLogoutUserMutation,
-} from "@/redux/apiReducer";
+} from "@/redux/userEndpoints";
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();
@@ -32,7 +32,7 @@ export const useAuth = () => {
   };
 
   const logout = async () => {
-    dispatch(api.util.resetApiState());
+    dispatch(baseApi.util.resetApiState());
     return await logoutUser().unwrap();
   };
 

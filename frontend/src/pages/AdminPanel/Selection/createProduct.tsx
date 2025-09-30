@@ -9,7 +9,7 @@ import { NumericFormat } from "react-number-format";
 import { CategorySelector } from "@/pages/AdminPanel/categorySelector";
 import { TagSelectorAndCreator } from "@/pages/AdminPanel/tagSelectorAndCreator";
 
-import { useCreateProductMutation } from "@/redux/apiReducer";
+import { useCreateProductMutation } from "@/redux/productEndpoints";
 
 const CreateProduct = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");

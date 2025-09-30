@@ -3,7 +3,7 @@ import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { ZodError } from "zod";
 import { useState, type Dispatch, type SetStateAction } from "react";
 
-import { useGetAllTagsQuery, useCreateTagMutation } from "@/redux/apiReducer";
+import { useGetAllTagsQuery, useCreateTagMutation } from "@/redux/tagEndpoints";
 import type { TagToSave } from "@/types/tag";
 import {
   tagInsideProductSchema,

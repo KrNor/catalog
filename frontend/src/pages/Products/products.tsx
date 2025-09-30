@@ -1,10 +1,8 @@
 import { Container, Row, Col, Alert, Spinner } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 
-import {
-  useGetProductsQuery,
-  useGetCategoryFamilyQuery,
-} from "@/redux/apiReducer";
+import { useGetProductsQuery } from "@/redux/productEndpoints";
+import { useGetCategoryFamilyQuery } from "@/redux/categoryEndpoints";
 import ProductListings from "@/pages/Products/productListings";
 import ProductSidebar from "@/pages/Products/ProductSidebar/productSidebar";
 
